@@ -1,0 +1,129 @@
+<!doctype html>
+<html lang="en-GB">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="description" content="Estimate your annual carbon footprint and compare changes to food, travel, home energy and spending.">
+  <title>Carbon footprint calculator</title>
+  <link rel="stylesheet" href="style.css">
+  <script src="model.js" defer></script>
+  <script src="app.js" defer></script>
+</head>
+<body>
+  <header class="site-header">
+    <div class="wrap header-inner">
+      <a class="wordmark" href="#top"><span class="mark" aria-hidden="true"></span> Carbon calculator</a>
+      <nav aria-label="Page sections">
+        <a href="#lifestyle">Lifestyle</a>
+        <a href="#sources">Method &amp; sources</a>
+      </nav>
+    </div>
+  </header>
+
+  <main id="top" class="wrap">
+    <div class="intro">
+      <h1>Your carbon footprint</h1>
+      <p>Estimate a year of emissions and see what changes when you change your habits.</p>
+    </div>
+    <noscript><p>Enable JavaScript to use the calculator.</p></noscript>
+
+    <section class="metrics" aria-label="Your annual estimate">
+      <div><span>Annual footprint</span><strong id="gross">—</strong><small>t CO₂e per person</small></div>
+      <div><span>Estimated reduction</span><strong id="reduction">—</strong><small>t CO₂e funded per year</small></div>
+      <div><span>Full offset estimate</span><strong id="cost">—</strong><small id="cost-note">at your assumed price per tonne</small></div>
+    </section>
+
+    <div class="workspace">
+      <section class="analysis panel" aria-labelledby="comparison-heading">
+        <div class="panel-heading">
+          <div>
+            <h2 id="comparison-heading">Compare footprints</h2>
+            <p>Annual tonnes of carbon dioxide equivalent (CO₂e)</p>
+          </div>
+          <button id="detail-toggle" type="button" aria-pressed="false">Show breakdown</button>
+        </div>
+        <div class="comparison-picker">
+          <label for="comparison">Compare with</label>
+          <select id="comparison"></select>
+          <button id="load-profile" type="button" hidden>Load profile</button>
+          <button id="delete-profile" type="button" hidden>Delete</button>
+        </div>
+        <p id="comparison-note" class="comparison-note"></p>
+
+        <div class="pies">
+          <section aria-labelledby="your-pie-title">
+            <h3 id="your-pie-title">Your estimate</h3>
+            <div id="your-pie"></div>
+          </section>
+          <section aria-labelledby="reference-pie-title">
+            <h3 id="reference-pie-title"></h3>
+            <div id="reference-pie"></div>
+          </section>
+        </div>
+        <div id="legend" class="legend"></div>
+
+        <section class="bar-section" aria-labelledby="bars-heading">
+          <h3 id="bars-heading">Emissions by category</h3>
+          <p>Both profiles use the same scale. Funded reductions extend left of zero.</p>
+          <div id="bars"></div>
+          <p id="offset-comparison" class="offset-comparison"></p>
+        </section>
+
+        <form id="save-profile" class="save-form">
+          <div>
+            <h3>Save a scenario</h3>
+            <p>Keep a named copy in this browser to load or compare later.</p>
+          </div>
+          <div class="save-fields">
+            <label class="sr-only" for="profile-name">Profile name</label>
+            <input id="profile-name" type="text" maxlength="50" placeholder="e.g. One fewer flight" required>
+            <button type="submit" class="primary">Save profile</button>
+          </div>
+          <p id="save-status" role="status" class="save-status"></p>
+        </form>
+      </section>
+
+      <aside class="panel editor" id="lifestyle" aria-labelledby="editor-heading">
+        <div class="panel-heading">
+          <div>
+            <h2 id="editor-heading">Your lifestyle</h2>
+            <p>Start with a preset or enter your own numbers.</p>
+          </div>
+          <button id="reset" type="button">Reset</button>
+        </div>
+        <div id="inputs"></div>
+        <a class="back-link" href="#top">Back to results ↑</a>
+      </aside>
+    </div>
+
+    <details id="sources" class="panel sources">
+      <summary>Method &amp; sources</summary>
+      <div class="source-content">
+        <h3>What the total covers</h3>
+        <p>CO₂e combines greenhouse gases using their warming impact over 100 years. The flight estimate also includes an indicative adjustment for non-CO₂ effects at altitude, such as contrails. Values are estimates for one person over one year. The starting inputs describe an illustrative UK lifestyle.</p>
+
+        <h3>Food</h3>
+        <p>Weekly quantities are multiplied by 52. The model uses rounded lifecycle estimates of 60 kg CO₂e per kg of beef, 10 for other meat, 3 for dairy and eggs combined, and 2 for the rest of the diet. These are scenario factors based on the range of foods in the study. Beef varies substantially by production system. The rest-of-diet factor blends staples, produce, plant proteins, drinks and packaged foods. Include restaurant food in these quantities. <a href="https://doi.org/10.1126/science.aaq0216">Poore &amp; Nemecek (2018)</a></p>
+
+        <h3>Flights, ground transport and home</h3>
+        <p>Flight factors are rounded economy estimates of 0.18 kg CO₂e per passenger-km for short haul and 0.15 for long haul, with indicative altitude effects and a distance uplift already included. The UK method applies a 1.7 multiplier to direct flight CO₂ and an 8% distance uplift. Enter one-way distances. Each trip counts both legs.</p>
+        <p>Ground transport uses rounded UK-style factors. Petrol/diesel and hybrid cars use 0.21 and 0.15 kg CO₂e per vehicle-km respectively, including an approximate upstream fuel allowance. An electric car uses 0.19 kWh per vehicle-km and your selected home electricity factor. Car operation and an estimated 0.04 kg CO₂e/km for vehicle manufacture are divided by occupancy. Bus and train use 0.11 and 0.04 kg per passenger-km respectively. The duration presets assume 24 km/h for buses and 80 km/h for trains.</p>
+        <p>Natural gas uses an estimated 0.20 kg CO₂e/kWh and heating oil 0.28, including an approximate upstream allowance. Electric heat is counted with home electricity. The UK grid preset is rounded from the 2026 generation factor. Cleaner and fossil-heavy grids are illustrative settings. <a href="https://www.gov.uk/government/publications/greenhouse-gas-reporting-conversion-factors-2026">UK government conversion factors (2026)</a> · <a href="https://assets.publishing.service.gov.uk/media/6a2940543b15d05a7ce3202e/2026-GHG-conversion-factors-methodology-report.pdf">Methodology</a></p>
+
+        <h3>Shopping, services and infrastructure</h3>
+        <p>These are editable allowances in kg CO₂e per person per year. Shopping covers goods, deliveries and disposal. Private services cover things such as hotels, telecoms and recreation. The shared allowance represents public services, infrastructure and a share of buildings. Allowances are illustrative. Leave out anything already counted elsewhere. <a href="https://www.gov.uk/government/statistics/uks-carbon-footprint/carbon-footprint-for-the-uk-and-england-to-2023">Defra consumption footprint categories</a></p>
+
+        <h3>AI use</h3>
+        <p>Subscription buttons set illustrative prompt counts and workloads. Actual emissions depend on the model, response length, hardware, batching and the data centre. Electricity uses prompts × Wh per prompt × data-centre grid intensity. The separate hardware and training allowance is an editable scenario assumption per prompt, since the reports use different boundaries and do not establish a universal split. The calculator covers text usage. <a href="https://arxiv.org/abs/2508.15734">Google serving study (0.24 Wh for its median text prompt)</a> · <a href="https://mistral.ai/news/our-contribution-to-a-global-environmental-standard-for-ai/">Mistral lifecycle study (1.14 g CO₂e for its example, including upstream impacts)</a></p>
+
+        <h3>Comparison profiles</h3>
+        <p>The headline benchmarks are rounded 2024 per-person greenhouse gas emissions from Jones et al., as compiled by Our World in Data. High-income countries are the proxy for developed economies. These are territorial emissions, including land-use change, and use a different scope from the personal consumption estimate. The category splits are illustrative allocations of those totals, with AI folded into other categories. <a href="https://ourworldindata.org/grapher/per-capita-ghg-emissions?tab=table&amp;time=1850..2024">Our World in Data benchmark table</a> · <a href="https://doi.org/10.5281/zenodo.16640595">Jones et al. dataset</a></p>
+
+        <h3>Donations and offset costs</h3>
+        <p>The model divides annual donations by the assumed pounds per tonne and multiplies gross emissions by the same price to estimate the full offset budget. It uses £200 per tonne as an example based on a UK biochar supplier's published price. For a charity, use a project-specific estimate of cost per additional tonne if available. The result is a funding scenario. Actual impact depends on additionality, delivery, permanence and the way tonnes are credited. Removing a tonne of CO₂ also has a different warming history from emitting a tonne of CO₂e today. <a href="https://www.restord.earth/carbon-removal">Restord's biochar price example</a></p>
+      </div>
+    </details>
+  </main>
+  <footer class="wrap">Annual estimates · Profiles are stored in this browser.</footer>
+</body>
+</html>
