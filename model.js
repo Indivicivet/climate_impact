@@ -9,15 +9,16 @@ const categories = [
   ] },
   { label: "Ground travel", short: "Ground", colour: "#1e70bf", parts: [
     ["Car use", "#1559a2", "car"], ["Car manufacture", "#328bd7", "carManufacture"],
-    ["Bus", "#62a8ea", "busDays"], ["Train", "#a0c7f0", "trainDays"],
+    ["Bus", "#62a8ea", "busMinutes"], ["Train", "#a0c7f0", "trainMinutes"],
   ] },
   { label: "Home energy", short: "Home", colour: "#c25c08", parts: [
-    ["Appliances, lights & cooling", "#bd530b", "electricity"],
+    ["Appliances & lights", "#bd530b", "electricity"],
     ["Space heating", "#e5821a", "spaceHeating"], ["Hot water", "#f5b657", "hotWater"],
+    ["Air conditioning", "#ffd18d", "coolTo"],
   ] },
   { label: "Goods & services", short: "Goods", colour: "#c13b62", parts: [
-    ["Shopping", "#962448", "shopping"], ["Phones & computers", "#d04d78", "phones", "computers"],
-    ["Subscriptions & leisure", "#efb5c9", "telecom", "leisure"],
+    ["Shopping", "#962448", "shopping"], ["Devices & telecom", "#d04d78", "devicesAndTelecom"],
+    ["Leisure", "#efb5c9", "leisure"],
   ] },
   { label: "Shared services", short: "Shared", colour: "#56617c", parts: [
     ["Public services", "#56617c", "publicServices"], ["Buildings & capital investment", "#94a0b9", "capital"],
@@ -29,20 +30,36 @@ const categories = [
 
 const grids = { uk: 0.131, us: 0.384, china: 0.525, eu: 0.210, world: 0.458 };
 const heatLoss = { flat: 80, terrace: 160, semi: 180, detached: 235 };
-const hotelFactors = { uk: 10.4, us: 16.1, china: 53.5 };
+const hotelFactors = {
+  uk: { typical: 10.4, limited: 7.79, full: 14.08 },
+  us: { typical: 16.1, limited: 13.78, full: 23.4 },
+  china: { typical: 53.5, limited: 29.54, full: 55.14 },
+};
+const travelWeeks = 48;
+const busKmPerHour = 24;
+const trainKmPerHour = 80;
+const devicesAndTelecomKg = 50 / 2 + 180 / 5 + 12 * 25 * 0.1;
+
+const travelPresets = [
+  { shortTrips: 1, longTrips: 0, hotelNights: 5 },
+  { shortTrips: 2, longTrips: 0, hotelNights: 10 },
+  { shortTrips: 0, longTrips: 1, hotelNights: 14 },
+  { shortTrips: 0, longTrips: 2, hotelNights: 28 },
+];
+
 const homePresets = [
-  { people: 2, electricity: 1800, grid: grids.uk, homeType: "flat",
-    winter: 4, summer: 15.3, indoor: 18, heat: "heatPump" },
+  { people: 1, electricity: 1800, grid: grids.uk, homeType: "flat",
+    winter: 4, summer: 15.3, indoor: 18, coolTo: 40, heat: "heatPump" },
   { people: 2, electricity: 2700, grid: grids.uk, homeType: "terrace",
-    winter: 4, summer: 15.3, indoor: 19.5, heat: "gas" },
+    winter: 4, summer: 15.3, indoor: 19.5, coolTo: 40, heat: "gas" },
   { people: 2, electricity: 4100, grid: grids.uk, homeType: "detached",
-    winter: 4, summer: 15.3, indoor: 21, heat: "gas" },
+    winter: 4, summer: 15.3, indoor: 21, coolTo: 40, heat: "gas" },
 ];
 
 const purchasePresets = [
-  { shopping: 20, phones: 1, computers: 0, telecom: 15, leisure: 5 },
-  { shopping: 70, phones: 1, computers: 1, telecom: 25, leisure: 30 },
-  { shopping: 180, phones: 2, computers: 2, telecom: 50, leisure: 100 },
+  { shopping: 20, leisure: 5 },
+  { shopping: 70, leisure: 30 },
+  { shopping: 180, leisure: 100 },
 ];
 
 // UK footprint accounts, with other regions scaled by public spending and fixed investment per person.
@@ -53,9 +70,9 @@ const sharedFootprints = {
 
 const initial = {
   meat: 600, beef: 20, dairy: 1800, otherFood: 8500,
-  shortTrips: 1, longTrips: 0, shortKm: 1500, longKm: 6500, hotelNights: 6, hotelRegion: "uk",
+  ...travelPresets[0], shortKm: 1500, longKm: 6500, hotelRegion: "uk", hotelType: "typical",
   car: "petrol", carDays: 3, commuteKm: 32, otherKm: 4000, occupants: 1.4,
-  busDays: 0, busKm: 8, trainDays: 0, trainKm: 80, travelWeeks: 48,
+  busMinutes: 0, trainMinutes: 0,
   ...homePresets[1], ...purchasePresets[1], sharedRegion: "uk",
   weeklyMTokens: 0, aiEnergy: 0.4, aiGrid: grids.world, aiHardware: 0.02,
   donation: 0, price: 200,
@@ -64,51 +81,56 @@ const initial = {
 // Illustrative activity mixes. Fractional journeys represent a per-person annual average.
 const benchmarks = [
   { id: "uk", name: "United Kingdom", button: "🇬🇧 UK", activities: {
-    meat: 1050, beef: 18, dairy: 2500, shortTrips: 1, longTrips: 0.25,
-    carDays: 0, otherKm: 8700, occupants: 1.5, busDays: 1, trainDays: 0.5,
-    trainKm: 30, homeType: "semi", people: 2.4, weeklyMTokens: 0.02,
+    meat: 1050, beef: 18, dairy: 2500, shortTrips: 1, longTrips: 0.25, hotelNights: 6,
+    carDays: 0, otherKm: 8700, occupants: 1.5, busMinutes: 40, trainMinutes: 22.5,
+    homeType: "semi", people: 2.4, weeklyMTokens: 0.02,
   } },
   { id: "us", name: "United States", button: "🇺🇸 US", activities: {
     meat: 1550, beef: 27, dairy: 2900, shortTrips: 1.6, longTrips: 0.35, shortKm: 1600,
-    carDays: 0, otherKm: 19150, occupants: 1.5, busDays: 0.4, trainDays: 0.2, trainKm: 30,
+    carDays: 0, otherKm: 19150, occupants: 1.5, busMinutes: 16, trainMinutes: 9,
     homeType: "detached", electricity: 9500, grid: grids.us, winter: 0, summer: 25,
     indoor: 20, people: 2.5, shopping: 125, hotelNights: 9, hotelRegion: "us",
-    telecom: 40, leisure: 65, weeklyMTokens: 0.04,
+    leisure: 65, weeklyMTokens: 0.04,
   } },
   { id: "china", name: "China", button: "🇨🇳 China", activities: {
     meat: 925, beef: 10, dairy: 650, shortTrips: 0.45, longTrips: 0.08, shortKm: 1300,
-    carDays: 0, otherKm: 3950, occupants: 1.6, busDays: 2.5, trainDays: 1.5, trainKm: 23,
+    carDays: 0, otherKm: 3950, occupants: 1.6, busMinutes: 100, trainMinutes: 51.75,
     homeType: "flat", electricity: 3200, grid: grids.china, winter: 1, summer: 26,
-    people: 2.6, shopping: 60, hotelNights: 4, hotelRegion: "china", telecom: 12,
+    people: 2.6, shopping: 60, hotelNights: 4, hotelRegion: "china",
     leisure: 15, weeklyMTokens: 0.02,
   } },
   { id: "high-income", name: "High-income countries", button: "Developed world", activities: {
     meat: 1200, beef: 21, dairy: 2400, shortTrips: 1.1, longTrips: 0.28,
-    carDays: 0, otherKm: 11100, occupants: 1.5, busDays: 1, trainDays: 0.6, trainKm: 28,
+    carDays: 0, otherKm: 11100, occupants: 1.5, busMinutes: 40, trainMinutes: 25.2,
     homeType: "semi", electricity: 5100, grid: 0.35, winter: 3, summer: 22, people: 2.5,
-    shopping: 100, hotelNights: 7, telecom: 30, leisure: 45,
+    shopping: 100, hotelNights: 7, leisure: 45,
     weeklyMTokens: 0.03,
   } },
   { id: "world", name: "World average", button: "🌐 World", activities: {
     meat: 565, beef: 17, dairy: 1200, otherFood: 7500, shortTrips: 0.27, longTrips: 0.08,
-    carDays: 0, otherKm: 3700, occupants: 1.7, busDays: 2, trainDays: 0.5, trainKm: 25,
+    carDays: 0, otherKm: 3700, occupants: 1.7, busMinutes: 80, trainMinutes: 18.75,
     homeType: "terrace", electricity: 2800, grid: grids.world, winter: 10, summer: 26,
-    indoor: 19, people: 3.5, shopping: 41, phones: 1, computers: 0.5, hotelNights: 2, telecom: 12, leisure: 12, weeklyMTokens: 0.01,
+    indoor: 19, people: 3.5, shopping: 41, hotelNights: 2, leisure: 12, weeklyMTokens: 0.01,
   } },
 ];
 
-function spaceHeat(profile) {
+function spaceEnergy(profile) {
   const midpoint = (profile.winter + profile.summer) / 2;
   const amplitude = Math.abs(profile.summer - profile.winter) / 2;
   const balance = profile.indoor - 4;
-  let degreeDays = 0;
+  const coolingTarget = profile.coolTo === 40 ? Infinity :
+    Math.max(profile.coolTo, profile.heat === "none" ? 0 : profile.indoor);
+  let heatingDays = 0;
+  let coolingDays = 0;
   for (let day = 0; day < 365; day++) {
     const outdoor = midpoint - amplitude * Math.cos(2 * Math.PI * day / 365);
-    degreeDays += Math.max(0, balance - outdoor);
+    heatingDays += Math.max(0, balance - outdoor);
+    coolingDays += Math.max(0, outdoor - coolingTarget);
   }
   const kwPerDegree = heatLoss[profile.homeType] / 1000;
   return {
-    kWh: degreeDays * 24 * kwPerDegree,
+    heatKWh: heatingDays * 24 * kwPerDegree,
+    coolingKWh: coolingDays * 24 * kwPerDegree / 3,
     winterKW: Math.max(0, balance - (midpoint - amplitude)) * kwPerDegree,
   };
 }
@@ -117,7 +139,7 @@ function calculate(profile) {
   const meatKg = profile.meat * 52 / 1000;
   const beefShare = profile.beef / 100;
   const carKm = profile.car === "none" ? 0 :
-    profile.carDays * profile.commuteKm * profile.travelWeeks + profile.otherKm;
+    profile.carDays * profile.commuteKm * travelWeeks + profile.otherKm;
   const carFactor = {
     none: 0, petrol: 0.21081, hybrid: 0.16276, electric: 0.205 * profile.grid,
   }[profile.car];
@@ -126,6 +148,7 @@ function calculate(profile) {
     electric: profile.grid, heatPump: profile.grid / 2.8,
   }[profile.heat];
   const annualMTokens = profile.weeklyMTokens * 52;
+  const { heatKWh, coolingKWh } = spaceEnergy(profile);
 
   const [publicServices, capital] = sharedFootprints[profile.sharedRegion];
   const kg = {
@@ -135,18 +158,17 @@ function calculate(profile) {
     otherFood: profile.otherFood * 52 / 1000 * 2,
     shortTrips: 2 * profile.shortTrips * profile.shortKm * (0.12576 + 0.02249),
     longTrips: 2 * profile.longTrips * profile.longKm * (0.11704 + 0.02461),
-    hotelNights: profile.hotelNights * hotelFactors[profile.hotelRegion],
+    hotelNights: profile.hotelNights * hotelFactors[profile.hotelRegion][profile.hotelType],
     car: carKm * carFactor / profile.occupants,
     carManufacture: carKm * 0.04 / profile.occupants,
-    busDays: 2 * profile.busDays * profile.busKm * profile.travelWeeks * 0.128,
-    trainDays: 2 * profile.trainDays * profile.trainKm * profile.travelWeeks * 0.03989,
+    busMinutes: profile.busMinutes / 60 * busKmPerHour * travelWeeks * 0.128,
+    trainMinutes: profile.trainMinutes / 60 * trainKmPerHour * travelWeeks * 0.03989,
     electricity: profile.electricity * profile.grid / profile.people,
-    spaceHeating: spaceHeat(profile).kWh * heatFactor / profile.people,
+    spaceHeating: heatKWh * heatFactor / profile.people,
     hotWater: 600 * heatFactor,
+    coolTo: coolingKWh * profile.grid / profile.people,
     shopping: 12 * profile.shopping * 0.5,
-    phones: 50 * profile.phones / 5,
-    computers: 180 * profile.computers / 5,
-    telecom: 12 * profile.telecom * 0.1,
+    devicesAndTelecom: devicesAndTelecomKg,
     leisure: 12 * profile.leisure * 0.25,
     publicServices,
     capital,

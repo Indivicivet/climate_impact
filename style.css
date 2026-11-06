@@ -107,7 +107,8 @@ p { margin: 0; color: var(--muted); }
   letter-spacing: -0.05em;
   font-variant-numeric: tabular-nums;
 }
-.pie-net { margin-top: 3px; font-size: 0.9em; color: var(--accent); font-weight: 650; }
+.pie-centre > span { line-height: 1.15; }
+.pie-gross { margin-top: 3px; font-size: 0.76em; }
 .pie-totals {
   display: grid;
   grid-template-columns: repeat(2, minmax(0, 1fr));
@@ -172,20 +173,8 @@ p { margin: 0; color: var(--muted); }
 .reference-stack { left: 52%; }
 .bar-segment { background-color: var(--segment); flex-basis: 0; min-height: 0; cursor: help; }
 .bar-segment:hover, .bar-segment:focus-visible { outline: 2px solid var(--ink); outline-offset: 0; z-index: 1; }
-.zero-bar { height: 5px; transform: translateY(-50%); cursor: help; }
-.zero-bar::before { content: ""; border-top: 1px solid var(--segment); margin-top: 2px; }
-.reference-stack.zero-bar::before { border-top-style: dashed; }
 .bar-labels { margin: 6px 0 0 var(--axis); text-align: center; font-size: clamp(0.68rem, 1.2vw, 0.88rem); font-weight: 650; }
 .bar-caption { overflow-wrap: anywhere; }
-.bar-caption::before {
-  content: "";
-  display: block;
-  height: 3px;
-  width: 16px;
-  border-radius: 2px;
-  margin: 0 auto 3px;
-  background: var(--category);
-}
 .bar-totals {
   display: flex;
   flex-wrap: wrap;
@@ -219,13 +208,15 @@ p { margin: 0; color: var(--muted); }
 
 .editor { padding: 0 12px 9px; }
 .editor-section { position: relative; padding: 9px 0; border-bottom: 1px solid var(--border); }
-.editor-title { display: flex; align-items: center; gap: 6px; font-weight: 700; padding-right: 65px; }
+.editor-title { display: flex; align-items: center; gap: 6px; font-weight: 700; }
+.editor-section:has(.editor-details) .editor-title { padding-right: 65px; }
 .swatch { display: inline-block; border-radius: 2px; width: 10px; height: 10px; flex: none; }
 .quick-fields { display: flex; flex-wrap: wrap; gap: 4px 12px; margin-top: 4px; }
 .field { border: 0; padding: 0; margin: 0 0 8px; min-width: 0; }
 .field:disabled { opacity: 0.55; }
 .field-heading, .field-adjustments, .choices { display: flex; flex-wrap: wrap; align-items: center; gap: 4px 8px; }
 .field-heading { font-size: 0.86rem; }
+.field-heading:empty { display: none; }
 .field-label { font-weight: 650; }
 .field-impact { margin-left: auto; color: var(--muted); font-size: 0.78rem; white-space: nowrap; font-variant-numeric: tabular-nums; }
 .field-adjustments { margin-top: 3px; }
@@ -242,7 +233,7 @@ p { margin: 0; color: var(--muted); }
 .editor-section:has(.editor-details[open]) .quick-fields { display: grid; gap: 8px; }
 .editor-section:not(:has(.editor-details[open])) .quick-field { display: flex; align-items: center; flex-wrap: wrap; gap: 4px 6px; }
 .editor-section:not(:has(.editor-details[open])) .quick-field .field-adjustments { margin-top: 0; }
-.editor-section:not(:has(.editor-details[open])) .quick-field :is(.help, .field-slider, .field-impact, .field-adjustments:not(:has(.choices))) {
+.editor-section:has(.editor-details):not(:has(.editor-details[open])) .quick-field :is(.help, .field-slider, .field-impact, .field-adjustments:not(:has(.choices))) {
   display: none;
 }
 .editor-details > summary {
