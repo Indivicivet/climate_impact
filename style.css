@@ -233,9 +233,12 @@ p { margin: 0; color: var(--muted); }
 .editor-section:has(.editor-details[open]) .quick-fields { display: grid; gap: 8px; }
 .editor-section:not(:has(.editor-details[open])) .quick-field { display: flex; align-items: center; flex-wrap: wrap; gap: 4px 6px; }
 .editor-section:not(:has(.editor-details[open])) .quick-field .field-adjustments { margin-top: 0; }
-.editor-section:has(.editor-details):not(:has(.editor-details[open])) .quick-field :is(.help, .field-slider, .field-impact, .field-adjustments:not(:has(.choices))) {
+.editor-section:has(.editor-details):not(:has(.editor-details[open])) .quick-field :is(.help, .field-impact),
+.editor-section:has(.editor-details):not(:has(.editor-details[open])) .quick-field:not(.quick-slider) :is(.field-slider, .field-adjustments:not(:has(.choices))) {
   display: none;
 }
+.quick-slider { flex: 1 1 100%; }
+.quick-slider .field-adjustments { flex: 1 1 135px; }
 .editor-details > summary {
   position: absolute;
   top: 4px;

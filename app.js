@@ -7,7 +7,7 @@ const sections = [
         ["Med meat", dietPresets[3]], ["High meat", dietPresets[4]],
       ] },
       { key: "calories", label: "Daily calories", quickLabel: "Daily calories", unit: "kcal/day",
-        min: 1000, max: 4000, step: 100 },
+        min: 1000, max: 4000, step: 100, quickSlider: true },
     ],
     detail: [
       { key: "meatServings", label: "Meat and fish", unit: "portions/wk", max: 35, sliderMax: 14, step: 0.5,
@@ -288,6 +288,7 @@ function buildComparisonOptions() {
 
 function buildField(field, quick = false) {
   const group = create("fieldset", quick ? "field quick-field" : "field");
+  if (quick && field.quickSlider) group.classList.add("quick-slider");
   group.append(create("legend", "sr-only", field.label));
   const heading = create("div", "field-heading");
   if (!quick || field.quickLabel) {
