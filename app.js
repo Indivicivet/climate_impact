@@ -17,7 +17,7 @@ const sections = [
     ],
   },
   {
-    title: "Flights", category: 1, quick: ["shortTrips", "longTrips"],
+    title: "Flights (return trips)", category: 1, quick: ["shortTrips", "longTrips"],
     common: [
       { key: "shortTrips", label: "Short-haul return trips per year", quickLabel: "Short haul",
         unit: "/yr", max: 40, step: 1,
