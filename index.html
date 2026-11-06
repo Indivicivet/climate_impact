@@ -10,89 +10,52 @@
   <script src="app.js" defer></script>
 </head>
 <body>
-  <header class="site-header">
-    <div class="wrap header-inner">
-      <a class="wordmark" href="#top"><span class="mark" aria-hidden="true"></span> Carbon calculator</a>
-      <nav aria-label="Page sections">
-        <a href="#lifestyle">Lifestyle</a>
-        <a href="#sources">Method &amp; sources</a>
-      </nav>
-    </div>
-  </header>
-
-  <main id="top" class="wrap">
-    <div class="intro">
-      <h1>Your carbon footprint</h1>
-      <p>Estimate a year of emissions and see what changes when you change your habits.</p>
-    </div>
+  <main class="wrap">
     <noscript><p>Enable JavaScript to use the calculator.</p></noscript>
-
-    <section class="metrics" aria-label="Your annual estimate">
-      <div><span>Annual footprint</span><strong id="gross">—</strong><small>t CO₂e per person</small></div>
-      <div><span>Estimated reduction</span><strong id="reduction">—</strong><small>t CO₂e funded per year</small></div>
-      <div><span>Full offset estimate</span><strong id="cost">—</strong><small id="cost-note">at your assumed price per tonne</small></div>
-    </section>
-
     <div class="workspace">
-      <section class="analysis panel" aria-labelledby="comparison-heading">
-        <div class="panel-heading">
-          <div>
-            <h2 id="comparison-heading">Compare footprints</h2>
-            <p>Annual tonnes of carbon dioxide equivalent (CO₂e)</p>
-          </div>
-          <button id="detail-toggle" type="button" aria-pressed="false">Show breakdown</button>
+      <section class="analysis panel" aria-label="Carbon footprint comparison">
+        <div class="metrics" aria-label="Your annual estimate">
+          <span id="gross" aria-label="Your footprint"></span>
+          <span id="reduction"></span>
+          <span id="cost"></span>
         </div>
-        <div class="comparison-picker">
-          <label for="comparison">Compare with</label>
-          <select id="comparison"></select>
-          <button id="load-profile" type="button" hidden>Load profile</button>
-          <button id="delete-profile" type="button" hidden>Delete</button>
-        </div>
-        <p id="comparison-note" class="comparison-note"></p>
 
         <div class="pies">
-          <section aria-labelledby="your-pie-title">
-            <h3 id="your-pie-title">Your estimate</h3>
+          <section class="pie-person" aria-label="Your estimate">
+            <div class="pie-caption">You</div>
             <div id="your-pie"></div>
           </section>
-          <section aria-labelledby="reference-pie-title">
-            <h3 id="reference-pie-title"></h3>
+          <section class="pie-person" aria-label="Comparison">
+            <div id="comparison" class="comparison-picker" role="group" aria-label="Compare with"></div>
             <div id="reference-pie"></div>
+            <div class="reference-info">
+              <span id="offset-comparison"></span>
+              <span id="comparison-note"></span>
+            </div>
+            <div id="profile-actions" class="profile-actions" hidden>
+              <button id="load-profile" type="button">Load profile</button>
+              <button id="delete-profile" type="button">Delete</button>
+            </div>
           </section>
         </div>
-        <div id="legend" class="legend"></div>
 
-        <section class="bar-section" aria-labelledby="bars-heading">
-          <h3 id="bars-heading">Emissions by category</h3>
-          <p>Both profiles use the same scale. Funded reductions extend left of zero.</p>
+        <section class="bar-section" aria-label="Emissions and funded reduction by category">
           <div id="bars"></div>
-          <p id="offset-comparison" class="offset-comparison"></p>
         </section>
 
         <form id="save-profile" class="save-form">
-          <div>
-            <h3>Save a scenario</h3>
-            <p>Keep a named copy in this browser to load or compare later.</p>
-          </div>
           <div class="save-fields">
             <label class="sr-only" for="profile-name">Profile name</label>
-            <input id="profile-name" type="text" maxlength="50" placeholder="e.g. One fewer flight" required>
+            <input id="profile-name" type="text" maxlength="50" placeholder="Profile name" required>
             <button type="submit" class="primary">Save profile</button>
           </div>
           <p id="save-status" role="status" class="save-status"></p>
         </form>
       </section>
 
-      <aside class="panel editor" id="lifestyle" aria-labelledby="editor-heading">
-        <div class="panel-heading">
-          <div>
-            <h2 id="editor-heading">Your lifestyle</h2>
-            <p>Start with a preset or enter your own numbers.</p>
-          </div>
-          <button id="reset" type="button">Reset</button>
-        </div>
+      <aside class="panel editor" aria-label="Your lifestyle">
         <div id="inputs"></div>
-        <a class="back-link" href="#top">Back to results ↑</a>
+        <button id="reset" type="button">Reset inputs</button>
       </aside>
     </div>
 
@@ -114,7 +77,7 @@
         <p>These are editable allowances in kg CO₂e per person per year. Shopping covers goods, deliveries and disposal. Private services cover things such as hotels, telecoms and recreation. The shared allowance represents public services, infrastructure and a share of buildings. Allowances are illustrative. Leave out anything already counted elsewhere. <a href="https://www.gov.uk/government/statistics/uks-carbon-footprint/carbon-footprint-for-the-uk-and-england-to-2023">Defra consumption footprint categories</a></p>
 
         <h3>AI use</h3>
-        <p>Subscription buttons set illustrative prompt counts and workloads. Actual emissions depend on the model, response length, hardware, batching and the data centre. Electricity uses prompts × Wh per prompt × data-centre grid intensity. The separate hardware and training allowance is an editable scenario assumption per prompt, since the reports use different boundaries and do not establish a universal split. The calculator covers text usage. <a href="https://arxiv.org/abs/2508.15734">Google serving study (0.24 Wh for its median text prompt)</a> · <a href="https://mistral.ai/news/our-contribution-to-a-global-environmental-standard-for-ai/">Mistral lifecycle study (1.14 g CO₂e for its example, including upstream impacts)</a></p>
+        <p>Count input and output text tokens processed each week, including repeated context. Plan buttons set illustrative workloads. Electricity uses thousands of tokens × Wh per thousand tokens × data-centre grid intensity. Hardware and training use a separate editable estimate per thousand tokens. These rates depend on the model, hardware and data centre. Saved profiles from the earlier calculator are converted at an assumed 1,000 tokens per prompt, preserving their estimated emissions. <a href="https://arxiv.org/abs/2508.15734">Google serving study</a> · <a href="https://mistral.ai/news/our-contribution-to-a-global-environmental-standard-for-ai/">Mistral lifecycle study</a></p>
 
         <h3>Comparison profiles</h3>
         <p>The headline benchmarks are rounded 2024 per-person greenhouse gas emissions from Jones et al., as compiled by Our World in Data. High-income countries are the proxy for developed economies. These are territorial emissions, including land-use change, and use a different scope from the personal consumption estimate. The category splits are illustrative allocations of those totals, with AI folded into other categories. <a href="https://ourworldindata.org/grapher/per-capita-ghg-emissions?tab=table&amp;time=1850..2024">Our World in Data benchmark table</a> · <a href="https://doi.org/10.5281/zenodo.16640595">Jones et al. dataset</a></p>
@@ -124,6 +87,6 @@
       </div>
     </details>
   </main>
-  <footer class="wrap">Annual estimates · Profiles are stored in this browser.</footer>
+  <div id="chart-tooltip" class="chart-tooltip" aria-hidden="true" hidden></div>
 </body>
 </html>

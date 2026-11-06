@@ -1,9 +1,9 @@
 const sections = [
   {
-    title: "Food", category: 0,
+    title: "Food", category: 0, quick: ["meat"],
     common: [
-      { key: "meat", label: "Meat per week", unit: "g", max: 5000, step: 50, choices: [
-        ["None", 0], ["Low · 250 g", 250], ["Medium · 600 g", 600], ["Lots · 1.2 kg", 1200],
+      { key: "meat", label: "Meat per week", unit: "g/wk", max: 5000, step: 50, choices: [
+        ["No meat", 0], ["250 g", 250], ["600 g", 600], ["1.2 kg", 1200],
       ], help: "A typical portion here is 150 g. Count fish with other meat." },
       { key: "beef", label: "Beef as a share of meat", unit: "%", max: 100, step: 1, slider: true, integer: true,
         choices: [["0%", 0], ["10%", 10], ["20%", 20], ["50%", 50]] },
@@ -17,12 +17,14 @@ const sections = [
     ],
   },
   {
-    title: "Flights", category: 1,
+    title: "Flights", category: 1, quick: ["shortTrips", "longTrips"],
     common: [
-      { key: "shortTrips", label: "Short-haul return trips per year", unit: "trips", max: 40, step: 1,
+      { key: "shortTrips", label: "Short-haul return trips per year", quickLabel: "Short haul",
+        unit: "/yr", max: 40, step: 1,
         slider: true, integer: true, choices: [["None", 0], ["1", 1], ["2", 2], ["4", 4]],
         help: "Default distance is 1,500 km each way, roughly London to Barcelona." },
-      { key: "longTrips", label: "Long-haul return trips per year", unit: "trips", max: 40, step: 1,
+      { key: "longTrips", label: "Long-haul return trips per year", quickLabel: "Long haul",
+        unit: "/yr", max: 40, step: 1,
         slider: true, integer: true, choices: [["None", 0], ["1", 1], ["2", 2], ["4", 4]],
         help: "Default distance is 6,500 km each way, roughly London to Chicago." },
     ],
@@ -32,7 +34,7 @@ const sections = [
     ],
   },
   {
-    title: "Ground travel", category: 2,
+    title: "Ground travel", category: 2, quick: ["car"],
     common: [
       { key: "car", label: "Car type", choices: [
         ["No car", "none"], ["Petrol / diesel", "petrol"], ["Hybrid", "hybrid"], ["Electric", "electric"],
@@ -58,10 +60,10 @@ const sections = [
     ],
   },
   {
-    title: "Home energy", category: 3,
+    title: "Home energy", category: 3, quick: ["electricity"],
     common: [
-      { key: "electricity", label: "Household electricity per year", unit: "kWh", max: 60000, step: 100,
-        choices: [["Low · 1,500", 1500], ["Medium · 2,700", 2700], ["High · 5,000", 5000]],
+      { key: "electricity", label: "Household electricity per year", unit: "kWh/yr", max: 60000, step: 100,
+        choices: [["1,500", 1500], ["2,700", 2700], ["5,000", 5000]],
         help: "Include electric heating here. Enter household use before splitting it between people. Exclude car charging." },
       { key: "people", label: "People in household", unit: "people", min: 1, max: 20, step: 1,
         integer: true, choices: [["1", 1], ["2", 2], ["3", 3], ["4", 4]] },
@@ -79,10 +81,10 @@ const sections = [
     ],
   },
   {
-    title: "Goods & services", category: 4,
+    title: "Goods & services", category: 4, quick: ["goods"],
     common: [
-      { key: "goods", label: "Shopping and goods allowance", unit: "kg CO₂e", max: 30000, step: 50,
-        choices: [["Low · 650", 650], ["Medium · 1,300", 1300], ["High · 2,600", 2600]],
+      { key: "goods", label: "Shopping and goods allowance", unit: "kg CO₂e/yr", max: 30000, step: 50,
+        choices: [["650", 650], ["1,300", 1300], ["2,600", 2600]],
         help: "Annual estimate for goods such as clothes, furniture, and devices, plus deliveries and waste." },
       { key: "services", label: "Private services allowance", unit: "kg CO₂e", max: 30000, step: 50,
         choices: [["Low · 450", 450], ["Medium · 900", 900], ["High · 1,800", 1800]],
@@ -90,34 +92,34 @@ const sections = [
     ],
   },
   {
-    title: "Shared services", category: 5,
+    title: "Shared services", category: 5, quick: ["shared"],
     common: [
-      { key: "shared", label: "Public services and infrastructure allowance", unit: "kg CO₂e", max: 30000, step: 50,
-        choices: [["Low · 850", 850], ["Medium · 1,700", 1700], ["High · 3,400", 3400]],
+      { key: "shared", label: "Public services and infrastructure allowance", unit: "kg CO₂e/yr", max: 30000, step: 50,
+        choices: [["850", 850], ["1,700", 1700], ["3,400", 3400]],
         help: "Illustrative annual share of public services and infrastructure, including a share of buildings." },
     ],
   },
   {
-    title: "AI use", category: 6,
+    title: "AI use", category: 6, quick: ["weeklyKTokens"],
     common: [
-      { key: "aiPreset", label: "Text AI use", choices: [
-        ["None", { prompts: 0 }],
-        ["Free · 30/wk", { prompts: 30, promptWh: 0.5, aiEmbodied: 0.1 }],
-        ["£20/mo · 150/wk", { prompts: 150, promptWh: 2, aiEmbodied: 0.2 }],
-        ["£200/mo · 700/wk", { prompts: 700, promptWh: 5, aiEmbodied: 0.5 }],
-      ], help: "Example workloads. The price of a plan does not determine its footprint." },
-      { key: "prompts", label: "Text prompts per week", unit: "prompts", max: 20000, step: 1, integer: true },
+      { key: "weeklyKTokens", label: "Thousands of text tokens per week", unit: "k tokens/wk", max: 20000,
+        choices: [
+          ["None", { weeklyKTokens: 0 }],
+          ["Free", { weeklyKTokens: 30, whPerKTokens: 0.5, embodiedPerKTokens: 0.1 }],
+          ["£20/mo", { weeklyKTokens: 150, whPerKTokens: 2, embodiedPerKTokens: 0.2 }],
+          ["£200/mo", { weeklyKTokens: 700, whPerKTokens: 5, embodiedPerKTokens: 0.5 }],
+        ], help: "Count input and output tokens. The plan buttons set example workloads and energy rates." },
     ],
     detail: [
-      { key: "promptWh", label: "Data-centre energy per prompt", unit: "Wh", max: 100, step: 0.1 },
+      { key: "whPerKTokens", label: "Data-centre energy per 1,000 tokens", unit: "Wh", max: 100 },
       { key: "aiGrid", label: "Data-centre electricity emissions factor", unit: "kg/kWh", max: 2, step: 0.01 },
-      { key: "aiEmbodied", label: "Estimated hardware and training per prompt", unit: "g CO₂e", max: 30, step: 0.01 },
+      { key: "embodiedPerKTokens", label: "Hardware and training per 1,000 tokens", unit: "g CO₂e", max: 30 },
     ],
   },
   {
-    title: "Climate donations",
+    title: "Climate donations", quick: ["donation"],
     common: [
-      { key: "donation", label: "Annual contribution", unit: "£", max: 20000, step: 1, slider: true, integer: true,
+      { key: "donation", label: "Annual contribution", unit: "£/yr", max: 20000, step: 1, slider: true, integer: true,
         choices: [["None", 0], ["£100", 100], ["£500", 500], ["£1,000", 1000]] },
       { key: "price", label: "Assumed cost per additional tonne", unit: "£/t", min: 1, max: 5000, step: 1, integer: true,
         choices: [["£50", 50], ["£200", 200], ["£500", 500]],
@@ -128,21 +130,22 @@ const sections = [
 
 const byId = id => document.getElementById(id);
 const sum = values => values.reduce((total, value) => total + value, 0);
-const storageKey = "climate-impact.profiles.v1";
+const storageKey = "climate-impact.profiles.v2";
 const fields = sections.flatMap(section => [...section.common, ...(section.detail ?? [])]);
 const modelFields = fields.filter(field => Object.hasOwn(initial, field.key));
 const number = new Intl.NumberFormat("en-GB", { maximumFractionDigits: 2 });
+const precise = new Intl.NumberFormat("en-GB", { maximumSignificantDigits: 6 });
 const currency = new Intl.NumberFormat("en-GB", {
   style: "currency", currency: "GBP", maximumFractionDigits: 0,
 });
-const reductionColour = "#267a66";
-const benchmarkNote = "2024 territorial average. Category shares are illustrative. Your estimate also includes imported goods and an altitude adjustment for flights.";
+const reductionColour = "#256759";
 
 let profile = { ...initial };
 let saved = readProfiles();
-let detailed = false;
+let comparisonId = benchmarks[0].id;
 const controls = new Map();
 const comparison = byId("comparison");
+const tooltip = byId("chart-tooltip");
 
 function create(tag, className, content) {
   const node = document.createElement(tag);
@@ -168,17 +171,27 @@ function coerce(field, value) {
 
 function readProfiles() {
   try {
-    const items = JSON.parse(localStorage.getItem(storageKey));
+    const current = localStorage.getItem(storageKey);
+    const items = JSON.parse(current ?? localStorage.getItem("climate-impact.profiles.v1"));
     if (!Array.isArray(items)) return [];
     return items.filter(item =>
       item && typeof item.id === "string" && typeof item.name === "string" &&
       item.values && typeof item.values === "object"
-    ).map(item => ({
-      id: item.id, name: item.name.slice(0, 50),
-      values: Object.fromEntries(modelFields.map(field => [
-        field.key, coerce(field, item.values[field.key]),
-      ])),
-    }));
+    ).map(item => {
+      // The old model used one workload unit per prompt. A unit is now 1,000 tokens.
+      const values = current === null ? {
+        ...item.values,
+        weeklyKTokens: item.values.prompts,
+        whPerKTokens: item.values.promptWh,
+        embodiedPerKTokens: item.values.aiEmbodied,
+      } : item.values;
+      return {
+        id: item.id, name: item.name.slice(0, 50),
+        values: Object.fromEntries(modelFields.map(field => [
+          field.key, coerce(field, values[field.key]),
+        ])),
+      };
+    });
   } catch {
     return [];
   }
@@ -195,22 +208,33 @@ function persistProfiles(items) {
   }
 }
 
-function updateComparisonOptions(selected) {
-  const typical = create("optgroup");
-  typical.label = "Typical person";
-  const profiles = create("optgroup");
-  profiles.label = "Saved profiles";
-  for (const item of benchmarks) typical.append(new Option(item.name, item.id));
-  for (const item of saved) profiles.append(new Option(item.name, item.id));
-  comparison.replaceChildren(typical);
-  if (saved.length) comparison.append(profiles);
-  comparison.value = selected;
-  if (!comparison.value) comparison.value = benchmarks[0].id;
+function buildComparisonOptions() {
+  comparison.replaceChildren();
+  for (const items of [benchmarks, saved]) {
+    if (!items.length) continue;
+    const row = create("div", "comparison-options");
+    for (const item of items) {
+      const button = create("button", "", item.button ?? item.name);
+      button.type = "button";
+      button.dataset.profile = item.id;
+      button.setAttribute("aria-label", item.name);
+      button.addEventListener("click", () => {
+        comparisonId = item.id;
+        render();
+      });
+      row.append(button);
+    }
+    comparison.append(row);
+  }
 }
 
-function buildField(field) {
-  const group = create("fieldset", "field");
-  group.append(create("legend", "", field.label));
+function buildField(field, quick = false) {
+  const group = create("fieldset", quick ? "field quick-field" : "field");
+  group.append(create("legend", quick ? "sr-only" : "", field.label));
+  if (quick && field.quickLabel) {
+    group.classList.add("quick-number");
+    group.append(create("span", "quick-label", field.quickLabel));
+  }
   const buttons = [];
   if (field.choices) {
     const row = create("div", "choices");
@@ -275,32 +299,32 @@ function buildField(field) {
 }
 
 function buildEditor() {
-  for (const [index, section] of sections.entries()) {
-    const details = create("details", "editor-section");
-    details.open = index === 0;
-    const summary = create("summary");
-    summary.append(create("span", "editor-title", section.title));
-    const metric = create("span", "section-value");
-    metric.id = "section-value-" + index;
-    summary.append(metric);
-    if (section.category !== undefined) {
-      const swatch = create("span", "swatch");
-      swatch.style.backgroundColor = categories[section.category].colour;
-      summary.prepend(swatch);
+  for (const section of sections) {
+    const panel = create("section", "editor-section");
+    panel.setAttribute("aria-label", section.title);
+    const title = create("div", "editor-title");
+    const swatch = create("span", "swatch");
+    swatch.style.backgroundColor = categories[section.category]?.colour ?? reductionColour;
+    title.append(swatch, document.createTextNode(section.title));
+
+    const quick = create("div", "quick-fields");
+    for (const field of section.common.filter(field => section.quick.includes(field.key))) {
+      quick.append(buildField(field, true));
     }
+    const details = create("details", "editor-details");
+    const summary = create("summary", "", "More");
+    summary.setAttribute("aria-label", "More " + section.title.toLowerCase() + " settings");
     const body = create("div", "editor-body");
-    body.append(...section.common.map(buildField));
-    if (section.detail) {
-      const more = create("details", "more-inputs");
-      more.append(create("summary", "", "More settings"), ...section.detail.map(buildField));
-      body.append(more);
+    for (const field of [...section.common, ...(section.detail ?? [])]) {
+      if (!section.quick.includes(field.key)) body.append(buildField(field));
     }
     details.append(summary, body);
-    byId("inputs").append(details);
+    panel.append(title, quick, details);
+    byId("inputs").append(panel);
   }
 }
 
-function updateEditor(values, reduction, editing) {
+function updateEditor(editing) {
   for (const [key, { group, buttons, input, slider }] of controls) {
     for (const { button, value } of buttons) {
       const active = typeof value === "object" ?
@@ -315,153 +339,226 @@ function updateEditor(values, reduction, editing) {
       (["carDays", "carMiles", "otherMiles", "occupants"].includes(key) && profile.car === "none") ||
       (key === "heating" && ["none", "electric"].includes(profile.heat));
   }
-  for (const [index, section] of sections.entries()) {
-    const amount = section.category === undefined ? reduction : sum(values[section.category]);
-    byId("section-value-" + index).textContent = tonnes(amount) + " t";
-  }
 }
 
-function drawPie(container, name, segments, total) {
-  const pie = create("div", "pie");
-  pie.setAttribute("role", "img");
-  const used = segments.filter(segment => segment.amount > 0);
-  pie.setAttribute("aria-label", name + ", " + tonnes(total) + " tonnes CO₂e. " +
-    used.map(({ label, amount }) => label + " " + tonnes(amount) + " tonnes").join(", "));
-  if (used.length) {
-    let start = 0;
-    const stops = used.map(({ amount, colour }, index) => {
-      const end = index === used.length - 1 ? 100 : start + 100 * amount / total;
-      const stop = colour + " " + start + "% " + end + "%";
-      start = end;
-      return stop;
-    });
-    pie.style.backgroundImage = "conic-gradient(" + stops.join(", ") + ")";
+const svgNamespace = "http://www.w3.org/2000/svg";
+const turn = 2 * Math.PI;
+
+function formatExact(value) {
+  return precise.format(value).replace("-", "−");
+}
+
+function chartMark(mark, label, detail) {
+  mark.setAttribute("tabindex", "0");
+  mark.setAttribute("role", "img");
+  mark.setAttribute("aria-label", label + ", " + detail);
+
+  function position(x, y) {
+    const left = Math.max(8, Math.min(x + 12, window.innerWidth - tooltip.offsetWidth - 8));
+    const below = y + 14;
+    const top = below + tooltip.offsetHeight < window.innerHeight - 8 ?
+      below : Math.max(8, y - tooltip.offsetHeight - 8);
+    tooltip.style.left = left + "px";
+    tooltip.style.top = top + "px";
   }
+
+  function show(x, y) {
+    tooltip.replaceChildren(create("strong", "", label), create("span", "", detail));
+    tooltip.hidden = false;
+    position(x, y);
+  }
+  mark.addEventListener("pointerenter", event => show(event.clientX, event.clientY));
+  mark.addEventListener("pointermove", event => {
+    if (!tooltip.hidden) position(event.clientX, event.clientY);
+  });
+  mark.addEventListener("pointerleave", () => { tooltip.hidden = true; });
+  mark.addEventListener("focus", () => {
+    const box = mark.getBoundingClientRect();
+    show(box.left + box.width / 2, box.top + box.height / 2);
+  });
+  mark.addEventListener("blur", () => { tooltip.hidden = true; });
+  mark.addEventListener("click", () => mark.focus());
+}
+
+function ringPath(start, end, inner, outer) {
+  const point = (angle, radius) => [
+    150 + radius * Math.sin(angle), 150 - radius * Math.cos(angle),
+  ].join(" ");
+
+  // A full turn needs two arcs because a single SVG arc with equal endpoints vanishes.
+  const clockwise = end - start > Math.PI ? 1 : 0;
+  if (end - start >= turn - 1e-10) {
+    return "M " + point(start, outer) +
+      " A " + outer + " " + outer + " 0 0 1 " + point(start + Math.PI, outer) +
+      " A " + outer + " " + outer + " 0 0 1 " + point(start, outer) +
+      " Z M " + point(start, inner) +
+      " A " + inner + " " + inner + " 0 0 0 " + point(start + Math.PI, inner) +
+      " A " + inner + " " + inner + " 0 0 0 " + point(start, inner) + " Z";
+  }
+  return "M " + point(start, outer) +
+    " A " + outer + " " + outer + " 0 " + clockwise + " 1 " + point(end, outer) +
+    " L " + point(end, inner) +
+    " A " + inner + " " + inner + " 0 " + clockwise + " 0 " + point(start, inner) + " Z";
+}
+
+function drawPie(container, name, groups, total, breakdown) {
+  const pie = create("div", "pie");
+  const graphic = document.createElementNS(svgNamespace, "svg");
+  graphic.setAttribute("viewBox", "0 0 300 300");
+  graphic.setAttribute("role", "group");
+  graphic.setAttribute("aria-label", name + " emissions breakdown");
+
+  function addRing(segments, inner, outer) {
+    let start = 0;
+    for (const segment of segments) {
+      if (segment.amount <= 0) continue;
+      const end = start + turn * segment.amount / total;
+      const path = document.createElementNS(svgNamespace, "path");
+      path.setAttribute("d", ringPath(start, end, inner, outer));
+      path.setAttribute("fill", segment.colour);
+      const share = formatExact(100 * segment.amount / total) + "% of total";
+      const parentShare = segment.parent ?
+        " · " + formatExact(100 * segment.amount / segment.parent.amount) + "% of " + segment.parent.label : "";
+      chartMark(path, segment.label, formatExact(segment.amount) + " t CO₂e/yr · " + share + parentShare);
+      graphic.append(path);
+      start = end;
+    }
+  }
+
+  if (total) {
+    addRing(groups, 66, breakdown ? 110 : 148);
+    if (breakdown) {
+      addRing(groups.flatMap(group => group.parts.map(part => ({ ...part, parent: group }))), 111, 148);
+    }
+  }
+
   const centre = create("span", "pie-centre");
-  centre.setAttribute("aria-hidden", "true");
-  centre.append(create("strong", "", tonnes(total)), create("small", "", "t CO₂e"));
-  pie.append(centre);
+  centre.append(create("strong", "", tonnes(total)), create("span", "", "t CO₂e/yr"));
+  pie.append(graphic, centre);
   container.replaceChildren(pie);
 }
 
-function drawLegend() {
-  const items = categories.map(({ label, colour }) => {
-    const item = create("span", "legend-item");
-    const swatch = create("span", "swatch");
-    swatch.style.backgroundColor = colour;
-    item.append(swatch, document.createTextNode(label));
-    return item;
-  });
-  byId("legend").replaceChildren(...items);
-}
-
-function segmentsFor(values, referenceValues, referenceTotals) {
-  return categories.map(({ label, colour, parts }, index) => ({
-    label, colour, amount: sum(values[index]), reference: referenceTotals[index],
-    parts: parts.map(([label, colour], partIndex) => ({
+function emissionsGroups(values) {
+  return categories.map((category, index) => ({
+    ...category,
+    amount: sum(values[index]),
+    parts: category.parts.map(([label, colour], partIndex) => ({
       label, colour, amount: values[index][partIndex],
-      reference: referenceValues ? referenceValues[index][partIndex] : null,
     })),
   }));
 }
 
-function drawBars(groups, yourTotal, referenceTotal, reduction, referenceReduction) {
-  const rows = [...groups, {
-    label: "Funded reduction", colour: reductionColour, amount: -reduction,
-    reference: referenceReduction === null ? null : -referenceReduction,
-  }, {
-    label: "Gross emissions", colour: "#2d423a", amount: yourTotal, reference: referenceTotal,
-  }];
-  const high = Math.max(1, yourTotal, referenceTotal);
-  const low = Math.max(high * 0.13, reduction, referenceReduction ?? 0);
-  const zero = 100 * low / (high + low);
-  const chart = create("div", "bar-chart");
-  chart.style.setProperty("--zero", zero + "%");
+function axisStep(maximum) {
+  const rough = Math.max(maximum, 0.01) / 4;
+  const power = 10 ** Math.floor(Math.log10(rough));
+  return power * [1, 2, 2.5, 5, 10].find(step => step >= rough / power);
+}
 
-  const key = create("div", "bar-key");
-  key.append(create("span", "key-you", "You"), create("span", "key-reference", "Comparison"));
-  const axis = create("div", "axis");
-  axis.append(create("span", "axis-min", "−" + tonnes(low)),
-    create("span", "axis-zero", "0"), create("span", "axis-max", tonnes(high) + " t"));
-  chart.append(key, axis);
-  for (const row of rows) {
-    const rowNode = create("div", "bar-row" + (row.detail ? " bar-detail" : ""));
-    const label = create("span", "bar-label");
-    const swatch = create("span", "swatch");
-    swatch.style.backgroundColor = row.colour;
-    label.append(swatch, document.createTextNode(row.label));
-    const lanes = create("div", "lanes");
-    for (const [index, value] of [row.amount, row.reference].entries()) {
-      const lane = create("div", "lane");
-      if (value) {
-        const bar = create("span", "bar" + (index ? " reference-bar" : ""));
-        bar.style.setProperty("--bar-colour", row.colour);
-        bar.style.width = 100 * Math.abs(value) / (high + low) + "%";
-        bar.style.left = (value < 0 ? zero + 100 * value / (high + low) : zero) + "%";
-        lane.append(bar);
-      }
-      lanes.append(lane);
-    }
-    lanes.setAttribute("aria-hidden", "true");
-    const amounts = create("div", "bar-amounts");
-    amounts.append(create("span", "", tonnes(row.amount)),
-      create("span", "reference-amount", row.reference === null ? "—" : tonnes(row.reference)));
-    amounts.setAttribute("aria-label", "You " + tonnes(row.amount) + " tonnes. Comparison " +
-      (row.reference === null ? "unavailable." : tonnes(row.reference) + " tonnes."));
-    rowNode.append(label, lanes, amounts);
-    chart.append(rowNode);
+function drawBars(personal, reference, reduction, referenceReduction, referenceName) {
+  const reductionGroup = { label: "Estimated funded reduction", short: "Funded",
+    colour: reductionColour, amount: -reduction };
+  const series = [personal.concat(reductionGroup),
+    reference.concat({ ...reductionGroup, amount: referenceReduction === null ? null : -referenceReduction })];
+  const maximum = Math.max(...personal.map(group => group.amount), ...reference.map(group => group.amount));
+  const step = axisStep(maximum + Math.max(reduction, referenceReduction ?? 0));
+  const topTicks = Math.max(1, Math.ceil(maximum / step));
+  const bottomTicks = Math.max(1, Math.ceil(Math.max(reduction, referenceReduction ?? 0) / step));
+  const top = topTicks * step;
+  const range = (topTicks + bottomTicks) * step;
+  const ordinate = amount => 100 * (top - amount) / range + "%";
+
+  const chart = create("div", "bar-chart");
+  const legend = create("div", "bar-key");
+  legend.append(create("span", "bar-unit", "t CO₂e/yr"), create("span", "key-you", "You"),
+    create("span", "key-reference", "Reference"));
+  const plot = create("div", "bar-plot");
+  for (let tick = -bottomTicks; tick <= topTicks; tick++) {
+    const line = create("div", tick === 0 ? "grid-line zero-line" : "grid-line");
+    line.style.top = ordinate(tick * step);
+    line.append(create("span", "", formatExact(tick * step)));
+    plot.append(line);
   }
+  const columns = create("div", "bar-columns");
+  const labels = create("div", "bar-labels");
+  for (const [index, group] of series[0].entries()) {
+    const pair = create("div", "bar-pair");
+    const caption = create("span", "", group.short ?? group.label);
+    caption.style.setProperty("--category", group.colour);
+    labels.append(caption);
+
+    for (const [side, groups] of series.entries()) {
+      const bar = create("div", side === 0 ? "bar-stack" : "bar-stack reference-stack");
+      const { label, colour, amount, parts } = groups[index];
+      const owner = side === 0 ? "You" : referenceName;
+      if (amount) {
+        bar.style.top = ordinate(Math.max(amount, 0));
+        bar.style.height = 100 * Math.abs(amount) / range + "%";
+        for (const part of parts ?? [{ label, colour, amount }]) {
+          if (part.amount === 0) continue;
+          const segment = create("span", "bar-segment");
+          segment.style.flexGrow = Math.abs(part.amount);
+          segment.style.setProperty("--segment", part.colour);
+          const total = parts ? " · " + formatExact(amount) + " t total" : "";
+          chartMark(segment, owner + " · " + part.label, formatExact(part.amount) + " t CO₂e/yr" + total);
+          bar.append(segment);
+        }
+      } else {
+        bar.classList.add("zero-bar");
+        bar.style.top = ordinate(0);
+        bar.style.setProperty("--segment", colour);
+        chartMark(bar, owner + " · " + label, amount === null ? "No estimate" : "0 t CO₂e/yr");
+      }
+      pair.append(bar);
+    }
+    columns.append(pair);
+  }
+  plot.append(columns);
+  chart.append(legend, plot, labels);
   byId("bars").replaceChildren(chart);
 }
 
-function render(editing) {
-  const values = calculate(profile);
-  const yourTotal = sum(values.map(sum));
-  const reduction = profile.donation / profile.price;
-  const savedProfile = saved.find(item => item.id === comparison.value);
-  const benchmark = benchmarks.find(item => item.id === comparison.value);
-  const referenceValues = savedProfile ? calculate(savedProfile.values) : null;
-  const referenceTotals = referenceValues ? referenceValues.map(sum) :
-    benchmark.shares.map(share => benchmark.total * share / 100);
-  const referenceTotal = sum(referenceTotals);
-  const referenceReduction = savedProfile ? savedProfile.values.donation / savedProfile.values.price : null;
-  const referenceName = savedProfile ? savedProfile.name : benchmark.name;
-  const groups = segmentsFor(values, referenceValues, referenceTotals);
-  const barRows = groups.flatMap(group => detailed && group.parts.length > 1 ?
-    [group, ...group.parts.map(part => ({ ...part, detail: true }))] : [group]);
-
-  byId("gross").textContent = tonnes(yourTotal);
-  byId("reduction").textContent = tonnes(reduction);
-  byId("cost").textContent = currency.format(yourTotal * profile.price);
-  byId("cost-note").textContent = reduction ?
-    currency.format(Math.max(0, yourTotal * profile.price - profile.donation)) + " left at the same rate" :
-    "at " + currency.format(profile.price) + " per tonne";
-  byId("reference-pie-title").textContent = referenceName;
-  const difference = yourTotal - referenceTotal;
-  byId("comparison-note").textContent = savedProfile ?
-    (Math.abs(difference) < 0.005 ? "Your gross emissions match this saved scenario." :
-      "Your gross emissions are " + tonnes(Math.abs(difference)) + " t " +
-      (difference < 0 ? "lower" : "higher") + " than this saved scenario.") : benchmarkNote;
-  byId("load-profile").hidden = !savedProfile;
-  byId("delete-profile").hidden = !savedProfile;
-  byId("detail-toggle").setAttribute("aria-pressed", detailed);
-  byId("detail-toggle").textContent = detailed ? "Hide breakdown" : "Show breakdown";
-
-  drawPie(byId("your-pie"), "Your estimate", detailed ? groups.flatMap(group => group.parts) : groups, yourTotal);
-  const referenceSegments = detailed && referenceValues ? groups.flatMap(group => group.parts) : groups;
-  drawPie(byId("reference-pie"), referenceName,
-    referenceSegments.map(segment => ({ ...segment, amount: segment.reference })), referenceTotal);
-  drawBars(barRows, yourTotal, referenceTotal, reduction, referenceReduction);
-  byId("offset-comparison").textContent = referenceName + " · Full offset estimate " +
-    currency.format(referenceTotal * profile.price) + "/year at " + currency.format(profile.price) + "/t.";
-  updateEditor(values, reduction, editing);
+function setMetric(id, value, label) {
+  byId(id).replaceChildren(create("strong", "", value), document.createTextNode(" " + label));
 }
 
-byId("detail-toggle").addEventListener("click", () => {
-  detailed = !detailed;
-  render();
-});
-comparison.addEventListener("change", () => render());
+function render(editing) {
+  tooltip.hidden = true;
+  const personal = emissionsGroups(calculate(profile));
+  const yourTotal = sum(personal.map(group => group.amount));
+  const reduction = profile.donation / profile.price;
+  const savedProfile = saved.find(item => item.id === comparisonId);
+  const benchmark = benchmarks.find(item => item.id === comparisonId);
+  const reference = savedProfile ? emissionsGroups(calculate(savedProfile.values)) :
+    categories.map(({ label, short, colour }, index) => ({
+      label, short, colour, amount: benchmark.total * benchmark.shares[index] / 100 || null,
+    }));
+  const referenceTotal = sum(reference.map(group => group.amount));
+  const referenceReduction = savedProfile ? savedProfile.values.donation / savedProfile.values.price : null;
+  const referenceName = savedProfile ? savedProfile.name : benchmark.name;
+
+  setMetric("gross", tonnes(yourTotal) + " t CO₂e/yr", "per person");
+  setMetric("reduction", tonnes(reduction) + " t CO₂e/yr", "funded");
+  setMetric("cost", currency.format(yourTotal * profile.price) + "/yr", "to offset");
+  byId("cost").title = reduction ?
+    currency.format(Math.max(0, yourTotal * profile.price - profile.donation)) + " still needed at the same rate" :
+    "At " + currency.format(profile.price) + " per tonne";
+  setMetric("offset-comparison", currency.format(referenceTotal * profile.price) + "/yr", "to offset");
+  const difference = yourTotal - referenceTotal;
+  byId("comparison-note").textContent = savedProfile ?
+    (Math.abs(difference) < 0.005 ? "Same total" :
+      "You: " + tonnes(Math.abs(difference)) + " t " + (difference < 0 ? "lower" : "higher")) :
+    "Illustrative split · 2024 territorial";
+  byId("profile-actions").hidden = !savedProfile;
+  for (const button of comparison.querySelectorAll("button")) {
+    button.setAttribute("aria-pressed", button.dataset.profile === comparisonId);
+  }
+
+  drawPie(byId("your-pie"), "You", personal, yourTotal, true);
+  drawPie(byId("reference-pie"), referenceName, reference, referenceTotal, Boolean(savedProfile));
+  drawBars(personal, reference, reduction, referenceReduction, referenceName);
+  updateEditor(editing);
+}
+
 byId("reset").addEventListener("click", () => {
   profile = { ...initial };
   render();
@@ -479,30 +576,31 @@ byId("save-profile").addEventListener("submit", event => {
     name, values: { ...profile } };
   if (!persistProfiles([...saved, item])) return;
   input.value = "";
-  updateComparisonOptions(item.id);
-  byId("save-status").textContent = "Saved “" + name + "” and selected it for comparison.";
+  comparisonId = item.id;
+  buildComparisonOptions();
+  byId("save-status").textContent = "Saved “" + name + "”.";
   render();
 });
 byId("load-profile").addEventListener("click", () => {
-  const item = saved.find(item => item.id === comparison.value);
+  const item = saved.find(item => item.id === comparisonId);
   profile = { ...item.values };
   byId("save-status").textContent = "Loaded “" + item.name + "” into your lifestyle.";
   render();
 });
 byId("delete-profile").addEventListener("click", () => {
-  const item = saved.find(item => item.id === comparison.value);
+  const item = saved.find(item => item.id === comparisonId);
   if (!confirm("Delete the saved profile “" + item.name + "”?")) return;
   if (!persistProfiles(saved.filter(candidate => candidate.id !== item.id))) return;
-  updateComparisonOptions(benchmarks[0].id);
-  comparison.focus();
+  comparisonId = benchmarks[0].id;
+  buildComparisonOptions();
   byId("save-status").textContent = "Deleted “" + item.name + "”.";
   render();
+  comparison.querySelector("button").focus();
 });
-document.querySelector('nav a[href="#sources"]').addEventListener("click", () => {
-  byId("sources").open = true;
+document.addEventListener("keydown", event => {
+  if (event.key === "Escape") tooltip.hidden = true;
 });
 
 buildEditor();
-drawLegend();
-updateComparisonOptions(benchmarks[0].id);
+buildComparisonOptions();
 render();
