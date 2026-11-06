@@ -15,7 +15,7 @@ Multiply weekly grams by 52 ÷ 1,000 to get annual kg of food. Multiply that mas
 
 The meat presets are 0, 250, 600 and 1,200 g per week. At the 600 g preset with 20% beef, meat contributes about 624 kg CO₂e per year. The default also includes 1.8 kg of dairy and eggs and 8.5 kg of other food and drink each week. These are example quantities. [Poore & Nemecek (2018)](https://doi.org/10.1126/science.aaq0216) · [Food factors by kilogram](https://ourworldindata.org/grapher/ghg-per-kg-poore)
 
-## Flights and ground travel
+## Travel
 
 For a return flight, multiply the one-way airport distance by two, by the annual trip count and by the economy factor. The factors below combine the 2026 DESNZ workbook's **With RF** rows for business travel by air and the matching well-to-tank rows for fuel supply.
 
@@ -26,7 +26,11 @@ For a return flight, multiply the one-way airport distance by two, by the annual
 
 DESNZ applies the indicative 1.7 radiative-forcing multiplier to direct flight CO₂. This represents non-CO₂ warming effects such as contrails and atmospheric chemistry. It does not multiply methane, nitrous oxide or fuel supply emissions. DESNZ already builds an 8% route uplift into the workbook to account for indirect paths and delays. Enter approximate airport-to-airport distances with no further uplift. The default 1,500 km short-haul return is about 0.445 t CO₂e. A 6,500 km each-way long-haul return is about 1.84 t. These UK route averages stand in for flights elsewhere. Cabin class, aircraft and actual contrail conditions can change the result. [DESNZ 2026 flat file](https://assets.publishing.service.gov.uk/media/6a6c9748862aaf18d9c62ac9/ghg-conversion-factors-2026-flat-format-revised.xlsx) · [DESNZ methodology, §§8.37–8.43](https://assets.publishing.service.gov.uk/media/6a2940543b15d05a7ce3202e/2026-GHG-conversion-factors-methodology-report.pdf)
 
-Car miles are round-trip commute miles × days per week × weeks, plus other miles driven or ridden. Convert miles to km with 1.609344. Divide vehicle emissions by average occupancy.
+Multiply your share of hotel room-nights by 10.4 (UK), 16.1 (US) or 53.5 (China) kg CO₂e per room-night. Seven nights in a room shared by two people counts as 3.5 each. [DESNZ hotel factors](https://www.gov.uk/government/publications/greenhouse-gas-reporting-conversion-factors-2026)
+
+## Ground travel
+
+Car distance is round-trip commute kilometres × days per week × weeks, plus other kilometres driven or ridden. Divide vehicle emissions by average occupancy.
 
 | Ground travel | Factor | Basis |
 | --- | ---: | --- |
@@ -77,28 +81,24 @@ All three home presets use two occupants, UK grid electricity and cold/warm mont
 
 ## Goods and services
 
-Use your share of spending in pounds sterling or equivalent. Average irregular purchases over the period you replace them. For example, a £480 washing machine replaced every ten years is £4/month before splitting it between household members. Buying a phone and laptop once each over five years adds an estimated 46 kg CO₂e per year. Staying seven nights in a room shared by two people counts as 3.5 room-nights per person.
+Enter your share in pounds sterling or equivalent. Average occasional purchases across the year. For example, a £480 washing machine replaced every ten years is £4/month before sharing.
 
 | Entry | Conversion to annual kg CO₂e |
 | --- | --- |
-| Clothes and shoes | Monthly GBP × 12 × 0.35. Defra COICOP 3.1.2 garments 0.354 and 3.2.1 shoes 0.343 kg/£. |
-| Furniture and household supplies | Monthly GBP × 12 × 0.45. A rounded mix of furniture (COICOP 5.1.1, 0.381) and everyday household or personal supplies (e.g. 12.1.3, 0.503). |
-| Appliances | Monthly GBP × 12 × 1.66. COICOP 5.3.1/5.3.2, 1.659 kg/£. Electricity goes in Home. |
-| Phones and computers | (50 kg per new phone + 180 kg per new laptop or similar device, each multiplied by the number bought in five years) ÷ 5. Rounded production proxies based on product footprints. |
-| Parcels and returns | Parcels/month × 12 × 0.20 kg. Royal Mail reports 0.175 kg per parcel in 2024–25. Rounded carrier proxy for delivery only. |
-| Hotels | Your room-nights × 10.4 (UK), 16.1 (US) or 53.5 (China) kg/room-night. DESNZ 2026. |
-| Phone and broadband | Monthly GBP × 12 × 0.10. Defra SIC 61, 0.0946 kg/£. |
+| Shopping and deliveries | Monthly GBP × 12 × 0.50. This blended estimate covers clothing, household goods, appliances and parcel deliveries. |
+| Phones and computers | (50 kg per phone × phones bought in five years + 180 kg per computer × computers bought in five years) ÷ 5. Rounded production proxies. |
+| Phone and broadband | Monthly GBP × 12 × 0.10. Defra SIC 61 is 0.0946 kg/£. |
 | Leisure services | Monthly GBP × 12 × 0.25. Approximate midpoint of COICOP 9.4.1 sport and recreation (0.155) and 9.4.2 cultural services (0.337). |
 
-Spending factors are average UK supply-chain intensities in 2023 pounds. Applying them to a personal budget is approximate, especially for imported purchases, other countries, changes in prices and unusual products. Product distribution can overlap with the separate parcel allowance. Count food and travel in their own sections. Public waste collection is part of shared services where publicly funded. Discarding something does not erase the emissions from making it. [Defra 2023 spend workbook, COICOP_multipliers_2023 and SIC_multipliers_2023](https://assets.publishing.service.gov.uk/media/6a3ce5fa33bc5beefd3c4983/spend_based_emissions_multipliers_1997_to_2023.ods) · [iPhone production share](https://www.apple.com/euro/environment/pdf/b/generic/iPhone_16_and_iPhone_16_Plus_PER_June2025.pdf) · [Apple laptop footprints](https://www.apple.com/environment/pdf/Apple_Environmental_Progress_Report_2025.pdf) · [Dell laptop footprint](https://i.dell.com/sites/csdocuments/CorpComm_Docs/en/carbon-footprint-latitude-5480.pdf) · [Royal Mail parcel emissions](https://www.royalmail.com/sustainability/environment) · [DESNZ hotel factors](https://www.gov.uk/government/publications/greenhouse-gas-reporting-conversion-factors-2026)
+The shopping factor rounds a worked basket to 0.50 kg/£. Use £35 clothes at 0.35 kg/£, £30 home goods at 0.45, £5 appliances at 1.66 and four parcel deliveries at 0.20 kg each. That gives about 34.85 kg on £70 of monthly spending. This blend is sensitive to the type of purchase. The spend factors use 2023 UK supply-chain prices and are approximate for other years and countries. Count phones and computers separately. [Defra 2023 spend workbook](https://assets.publishing.service.gov.uk/media/6a3ce5fa33bc5beefd3c4983/spend_based_emissions_multipliers_1997_to_2023.ods) · [iPhone production share](https://www.apple.com/euro/environment/pdf/b/generic/iPhone_16_and_iPhone_16_Plus_PER_June2025.pdf) · [Laptop footprints](https://www.apple.com/environment/pdf/Apple_Environmental_Progress_Report_2025.pdf) · [Royal Mail parcel emissions](https://www.royalmail.com/sustainability/environment)
 
-| Example | Clothes / home goods / appliances / telecom / leisure, £ per month | Phones / computers in five years | Parcels per month | UK hotel room-nights per year |
-| --- | --- | --- | ---: | ---: |
-| Low | 10 / 8 / 2 / 15 / 5 | 1 / 0 | 1 | 1 |
-| Medium | 35 / 30 / 5 / 25 / 30 | 1 / 1 | 4 | 6 |
-| High | 80 / 85 / 15 / 50 / 100 | 2 / 2 | 12 | 20 |
+| Example | Shopping / telecom / leisure, £ per month | Phones / computers in five years |
+| --- | --- | --- |
+| Low | 20 / 15 / 5 | 1 / 0 |
+| Medium | 70 / 25 / 30 | 1 / 1 |
+| High | 180 / 50 / 100 | 2 / 2 |
 
-These are editable example budgets. The preset label totals recurring spend and excludes the device, delivery and hotel inputs.
+The preset label totals monthly spend. Hotel stays are set under Travel.
 
 ## Shared services
 
@@ -131,18 +131,20 @@ At 150,000 tokens/week, 0.4 kWh/million and the 0.458 kg/kWh world grid, the mod
 
 Each reference runs the same activity model with the explicit inputs in [model.js](model.js). Every category and subcategory is calculated from those inputs. These profiles are illustrations, with several inputs anchored to statistics and others chosen to show plausible activity differences. They are not observed national footprints or representative surveys. High-income countries are the proxy for developed economies.
 
-| Reference | Meat g/week | Vehicle miles per person after sharing | Household appliance electricity kWh/yr | Model result, t CO₂e/person/yr |
+| Reference | Meat g/week | Vehicle km per person after sharing | Household appliance electricity kWh/yr | Model result, t CO₂e/person/yr |
 | --- | ---: | ---: | ---: | ---: |
-| UK | 1,050 | 3,600 | 2,700 | 9.1 |
-| US | 1,550 | 7,900 | 9,500 | 14.7 |
-| China | 925 | 1,530 | 3,200 | 6.3 |
-| High income | 1,200 | 4,600 | 5,100 | 10.6 |
-| World | 565 | 1,350 | 2,800 | 4.6 |
+| UK | 1,050 | 5,800 | 2,700 | 9.1 |
+| US | 1,550 | 12,770 | 9,500 | 14.8 |
+| China | 925 | 2,470 | 3,200 | 6.3 |
+| High income | 1,200 | 7,400 | 5,100 | 10.6 |
+| World | 565 | 2,180 | 2,800 | 4.5 |
 
-For diet, the UK, China and world examples use about 65% of FAOSTAT meat supply by weight (84.44, 74.03 and 45.12 kg/person/year) as a rough portion-weight proxy. The 65% is an assumption to allow for non-edible material, preparation and waste, which vary by food and location. US and high-income amounts and beef shares are illustrative. GB's 256.1 billion car miles in 2024 and FHWA's US light-duty travel figures anchor the order of magnitude of the road scenarios. US electricity uses the EIA anchor described under Home. Remaining miles, travel mix, climate endpoints, household size, non-US/UK electricity, budgets and AI use are illustrative. For example, the China case uses a flat and a China grid, with more bus and rail travel and fewer car miles than the US case. Model totals omit activity outside the inputs and can differ from official consumption or territorial inventories. [FAOSTAT food balances](https://www.fao.org/faostat/en/#data/FBS) · [FAOSTAT meat supply data view](https://ourworldindata.org/grapher/meat-supply-per-person?tab=table) · [GB road traffic](https://www.gov.uk/government/statistics/road-traffic-estimates-in-great-britain-2024) · [US FHWA travel](https://www.fhwa.dot.gov/policyinformation/statistics/2023/vm1.cfm) · [Defra UK consumption footprint](https://www.gov.uk/government/statistics/uks-carbon-footprint/carbon-footprint-for-the-uk-and-england-to-2023)
+For diet, the UK, China and world examples use about 65% of FAOSTAT meat supply by weight (84.44, 74.03 and 45.12 kg/person/year) as a rough portion-weight proxy. The 65% is an assumption to allow for non-edible material, preparation and waste, which vary by food and location. US and high-income amounts and beef shares are illustrative. GB's roughly 412 billion car-kilometres in 2024 and FHWA's US light-duty travel figures anchor the order of magnitude of the road scenarios. US electricity uses the EIA anchor described under Home. Remaining distances, travel mix, climate endpoints, household size, non-US/UK electricity, budgets and AI use are illustrative. For example, the China case uses a flat and a China grid, with more bus and rail travel and less driving than the US case. Model totals omit activity outside the inputs and can differ from official consumption or territorial inventories. [FAOSTAT food balances](https://www.fao.org/faostat/en/#data/FBS) · [FAOSTAT meat supply data view](https://ourworldindata.org/grapher/meat-supply-per-person?tab=table) · [GB road traffic](https://www.gov.uk/government/statistics/road-traffic-estimates-in-great-britain-2024) · [US FHWA travel](https://www.fhwa.dot.gov/policyinformation/statistics/2023/vm1.cfm) · [Defra UK consumption footprint](https://www.gov.uk/government/statistics/uks-carbon-footprint/carbon-footprint-for-the-uk-and-england-to-2023)
 
 ## Donations and saved profiles
 
 The pie slices and headline number show gross emissions. Estimated funded tonnes are annual donation ÷ assumed pounds per additional tonne. Net is gross minus those funded tonnes, so it can be negative. The gross offset budget is gross × cost per tonne. The default £200/t is a published biochar example. A donation's actual effect depends on what it finances, additionality, delivery and permanence. A tonne of future removal and a tonne emitted today have different warming histories. [Restord price example](https://www.restord.earth/carbon-removal)
 
 Older saved profiles retain their recorded activities where the units still make sense. Old token counts convert from thousands to millions, and Wh per thousand converts numerically to kWh per million. Older prompt counts use the previous assumption of 1,000 tokens per prompt. The new purchase, shared-service, heating and hardware estimates use the new defaults where the earlier inputs contain no corresponding activity data. For an older electric-heating profile, the electricity reading already covered heat, so migration selects **No separate heating**.
+
+The current migration converts older driving distances to kilometres using 1.609344 km per mile. It adds clothing, home goods and appliance budgets to populate Shopping. The blended factor now includes deliveries, so older parcel counts no longer change the estimate. Hotel nights and location are retained under Travel.

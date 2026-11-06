@@ -2,10 +2,10 @@ const sections = [
   {
     title: "Food", category: 0, quick: ["meat"],
     common: [
-      { key: "meat", label: "Meat per week", unit: "g/wk", max: 5000, step: 50, choices: [
+      { key: "meat", label: "Meat per week", unit: "g/wk", max: 5000, step: 50, impact: ["beef", "otherMeat"], choices: [
         ["No meat", 0], ["250 g", 250], ["600 g", 600], ["1.2 kg", 1200],
       ], help: "A typical portion here is 150 g. Count fish with other meat." },
-      { key: "beef", label: "Beef as a share of meat", unit: "%", max: 100, step: 1, slider: true, integer: true,
+      { key: "beef", label: "Beef as a share of meat", unit: "%", max: 100, integer: true,
         choices: [["0%", 0], ["10%", 10], ["20%", 20], ["50%", 50]] },
       { key: "dairy", label: "Dairy and eggs per week", unit: "g", max: 12000, step: 100,
         choices: [["None", 0], ["Low · 700 g", 700], ["Medium · 1.8 kg", 1800], ["High · 3 kg", 3000]] },
@@ -17,40 +17,42 @@ const sections = [
     ],
   },
   {
-    title: "Flights (return trips)", category: 1, quick: ["shortTrips", "longTrips"],
+    title: "Travel", category: 1, quick: ["shortTrips", "longTrips", "hotelNights"],
     common: [
-      { key: "shortTrips", label: "Short-haul return trips per year", quickLabel: "Short haul",
-        unit: "/yr", max: 40, step: 1,
-        slider: true, integer: true, choices: [["None", 0], ["1", 1], ["2", 2], ["4", 4]],
-        help: "Default distance is 1,500 km each way, roughly London to Barcelona." },
-      { key: "longTrips", label: "Long-haul return trips per year", quickLabel: "Long haul",
-        unit: "/yr", max: 40, step: 1,
-        slider: true, integer: true, choices: [["None", 0], ["1", 1], ["2", 2], ["4", 4]],
-        help: "Default distance is 6,500 km each way, roughly London to Chicago." },
+      { key: "shortTrips", label: "Short-haul return flights", quickLabel: "Short haul",
+        unit: "returns/yr", max: 40, step: 1, integer: true },
+      { key: "longTrips", label: "Long-haul return flights", quickLabel: "Long haul",
+        unit: "returns/yr", max: 40, step: 1, integer: true },
+      { key: "hotelNights", label: "Your share of hotel room nights", quickLabel: "Hotels",
+        unit: "nights/yr", max: 365, step: 0.5,
+        help: "Seven nights shared by two people counts as 3.5 each." },
     ],
     detail: [
       { key: "shortKm", label: "Short haul, one-way distance", unit: "km", max: 6000, step: 50 },
       { key: "longKm", label: "Long haul, one-way distance", unit: "km", max: 20000, step: 50 },
+      { key: "hotelRegion", label: "Hotel location", choices: [
+        ["UK", "uk"], ["US", "us"], ["China", "china"],
+      ] },
     ],
   },
   {
     title: "Ground travel", category: 2, quick: ["car"],
     common: [
-      { key: "car", label: "Car type", choices: [
+      { key: "car", label: "Car type", impact: ["car", "carManufacture"], choices: [
         ["No car", "none"], ["Petrol / diesel", "petrol"], ["Hybrid", "hybrid"], ["Electric", "electric"],
       ] },
       { key: "carDays", label: "Car commute days per week", unit: "days", max: 7, step: 1,
         choices: [["None", 0], ["3 days", 3], ["5 days", 5]] },
-      { key: "carMiles", label: "Car commute round trip", unit: "mi", max: 300, step: 1,
-        choices: [["10 miles", 10], ["20 miles", 20], ["40 miles", 40]] },
+      { key: "commuteKm", label: "Car commute round trip", unit: "km", max: 500, step: 1,
+        choices: [["15 km", 15], ["32 km", 32], ["65 km", 65]] },
       { key: "transit", label: "Public transport commute", choices: [
         ["None", { busDays: 0, trainDays: 0 }],
         ["Bus · 20 min each way", { busDays: 5, busKm: 8, trainDays: 0 }],
         ["Train · 1 h each way", { busDays: 0, trainDays: 5, trainKm: 80 }],
-      ], help: "Presets assume 5 days a week. Customise both modes below." },
+      ] },
     ],
     detail: [
-      { key: "otherMiles", label: "Other car travel per year", unit: "mi", max: 80000, step: 100 },
+      { key: "otherKm", label: "Other car travel", unit: "km/yr", max: 130000, step: 100, sliderMax: 30000 },
       { key: "occupants", label: "Average people in car, including you", unit: "people", min: 1, max: 8, step: 0.1 },
       { key: "busDays", label: "Bus travel days per week", unit: "days", max: 7, step: 1 },
       { key: "busKm", label: "Bus distance each way", unit: "km", max: 300, step: 1 },
@@ -75,23 +77,24 @@ const sections = [
       { key: "climate", label: "Outdoor climate", choices: [
         ["UK-like", { winter: 4, summer: 15.3 }], ["Cold winter", { winter: -5, summer: 21 }],
         ["Warm year-round", { winter: 16, summer: 27 }],
-      ], help: "Use the average temperatures for your coldest and warmest months." },
-      { key: "winter", label: "Coldest month average", unit: "°C", min: -40, max: 40 },
-      { key: "summer", label: "Warmest month average", unit: "°C", min: -20, max: 50 },
-      { key: "indoor", label: "Room temperature when heating", unit: "°C", min: 10, max: 30,
+      ] },
+      { key: "winter", label: "Coldest month average", unit: "°C", min: -40, max: 40, step: 0.5 },
+      { key: "summer", label: "Warmest month average", unit: "°C", min: -20, max: 50, step: 0.5 },
+      { key: "indoor", label: "Thermostat", unit: "°C", min: 10, max: 30, step: 0.5,
         choices: [["18°", 18], ["20°", 20], ["22°", 22]] },
-      { key: "heat", label: "Space and water heating", choices: [
+      { key: "heat", label: "Space and water heating", impact: ["spaceHeating", "hotWater"], choices: [
         ["Gas boiler", "gas"], ["Oil boiler", "oil"], ["Heat pump", "heatPump"],
         ["Electric resistance", "electric"], ["No separate heating", "none"],
       ] },
       { key: "electricity", label: "Appliances, lights and cooling", unit: "kWh/yr", max: 60000,
+        step: 50, sliderMax: 15000,
         choices: [["Low", 1800], ["Medium", 2700], ["High", 4100], ["Heavy use", 9500]],
-        help: "Use a preset or read annual kWh off your bill. Exclude EV charging and any heat modelled above." },
-      { key: "grid", label: "Electricity emissions factor", unit: "kg/kWh", max: 2,
+        help: "Exclude car charging and any heat counted above." },
+      { key: "grid", label: "Electricity emissions factor", unit: "kg/kWh", max: 2, step: 0.001,
         choices: [["UK", grids.uk], ["US", grids.us], ["China", grids.china], ["EU", grids.eu], ["World", grids.world]],
       },
     ],
-    note: "Home presets assume two people and a UK climate and grid. Open these settings to match your home.",
+    note: "Presets use two people and UK climate and electricity.",
   },
   {
     title: "Goods & services", category: 4, quick: ["shoppingPreset"],
@@ -102,31 +105,21 @@ const sections = [
       ] },
     ],
     detail: [
-      { key: "clothing", label: "New clothes and shoes", unit: "£/mo", max: 5000 },
-      { key: "homeGoods", label: "Furniture and household supplies", unit: "£/mo", max: 5000,
-        help: "Average occasional purchases across the year and divide shared purchases between people." },
-      { key: "appliances", label: "New appliances, such as a fridge or washing machine", unit: "£/mo", max: 5000,
-        help: "A £480 washing machine replaced every 10 years is £4/month before sharing." },
-      { key: "phones", label: "New phones bought in the past 5 years", unit: "phones", max: 40, integer: true },
-      { key: "computers", label: "New laptops or similar devices in the past 5 years", unit: "devices", max: 40, integer: true },
-      { key: "parcels", label: "Parcel deliveries and returns", unit: "/mo", max: 300 },
-      { key: "hotelNights", label: "Your share of hotel room nights per year", unit: "nights", max: 365,
-        help: "A week in a room shared by two people counts as 3.5 nights each." },
-      { key: "hotelRegion", label: "Where you usually stay", choices: [
-        ["UK", "uk"], ["US", "us"], ["China", "china"],
-      ] },
-      { key: "telecom", label: "Phone and broadband bills", unit: "£/mo", max: 1000 },
-      { key: "leisure", label: "Leisure services, such as cinema, gym and events", unit: "£/mo", max: 5000,
-        help: "Count food and travel in their own sections." },
+      { key: "shopping", label: "Shopping & deliveries", unit: "£/mo", max: 15000, step: 5, sliderMax: 1500,
+        help: "Clothes, home goods and appliances. Average occasional purchases and enter your share." },
+      { key: "phones", label: "New phones", unit: "/5 yr", max: 40, sliderMax: 10, integer: true },
+      { key: "computers", label: "New computers", unit: "/5 yr", max: 40, sliderMax: 10, integer: true },
+      { key: "telecom", label: "Phone & broadband bills", unit: "£/mo", max: 1000, step: 5, sliderMax: 200 },
+      { key: "leisure", label: "Gym, cinema & events", unit: "£/mo", max: 5000, step: 5, sliderMax: 500 },
     ],
-    note: "Use your share in pounds sterling or the equivalent. The presets also set 1, 6 or 20 hotel nights per year and 1, 4 or 12 parcels per month.",
   },
   {
     title: "Shared services", category: 5, quick: ["sharedRegion"],
     common: [
-      { key: "sharedRegion", label: "Where you live", choices: benchmarks.map(({ button, id }) => [button, id]) },
+      { key: "sharedRegion", label: "Where you live", impact: ["publicServices", "capital"],
+        choices: benchmarks.map(({ button, id }) => [button, id]) },
     ],
-    note: "Your per-person share of things such as schools, hospitals, roads, public waste collection and investment in buildings and equipment. Choose where you live. We estimate the rest.",
+    note: "Your share of public services and infrastructure.",
   },
   {
     title: "AI use", category: 6, quick: ["weeklyMTokens"],
@@ -134,22 +127,20 @@ const sections = [
       { key: "weeklyMTokens", label: "Millions of processed text tokens per week", unit: "M tokens/wk", max: 100,
         slider: "log", choices: [
           ["None", 0], ["Free use", 0.03], ["£20/mo use", 0.15], ["£200/mo use", 0.7],
-        ], help: "Count input and output, including repeated context and reasoning when reported. 0.15 M is 150,000 tokens. Plans are examples of volume." },
+        ], help: "Count input and output, including reasoning. 0.15 M = 150,000 tokens." },
     ],
     detail: [
-      { key: "aiEnergy", label: "Data-centre electricity per million tokens", unit: "kWh/M", max: 100,
-        choices: [["Efficient · 0.1", 0.1], ["Frontier example · 0.4", 0.4], ["Heavy · 2", 2]],
-        help: "A workload assumption. Model, batching, context and hardware affect this rate." },
-      { key: "aiGrid", label: "Data-centre electricity emissions factor", unit: "kg/kWh", max: 2,
+      { key: "aiEnergy", label: "Data-centre electricity", unit: "kWh/M", max: 100, step: 0.1, sliderMax: 5,
+        choices: [["Efficient · 0.1", 0.1], ["Frontier · 0.4", 0.4], ["Heavy · 2", 2]] },
+      { key: "aiGrid", label: "Data-centre electricity emissions factor", unit: "kg/kWh", max: 2, step: 0.001,
         choices: [["World", grids.world], ["US", grids.us], ["EU", grids.eu]] },
-      { key: "aiHardware", label: "Server manufacture per million tokens", unit: "kg CO₂e/M", max: 30,
-        help: "A rough allocation across the server's lifetime. See the method for the assumptions." },
+      { key: "aiHardware", label: "Server manufacture", unit: "kg CO₂e/M", max: 30, step: 0.01, sliderMax: 0.5 },
     ],
   },
   {
     title: "Climate donations", quick: ["donation"],
     common: [
-      { key: "donation", label: "Annual contribution", unit: "£/yr", max: 20000, step: 1, slider: true, integer: true,
+      { key: "donation", label: "Annual contribution", unit: "£/yr", max: 20000, sliderMax: 2000, integer: true,
         choices: [["None", 0], ["£100", 100], ["£500", 500], ["£1,000", 1000]] },
       { key: "price", label: "Assumed cost per additional tonne", unit: "£/t", min: 1, max: 5000, step: 1, integer: true,
         choices: [["£50", 50], ["£200", 200], ["£500", 500]],
@@ -160,12 +151,16 @@ const sections = [
 
 const byId = id => document.getElementById(id);
 const sum = values => values.reduce((total, value) => total + value, 0);
-const storageVersion = 3;
+const storageVersion = 4;
 const storageKey = "climate-impact.profiles.v" + storageVersion;
 const fields = sections.flatMap(section => [...section.common, ...(section.detail ?? [])]);
 const modelFields = fields.filter(field => Object.hasOwn(initial, field.key));
 const number = new Intl.NumberFormat("en-GB", { maximumFractionDigits: 2 });
-const precise = new Intl.NumberFormat("en-GB", { maximumSignificantDigits: 6 });
+const precise = new Intl.NumberFormat("en-GB", { maximumSignificantDigits: 4 });
+const compact = new Intl.NumberFormat("en-GB", { maximumSignificantDigits: 2 });
+const percent = new Intl.NumberFormat("en-GB", {
+  style: "percent", minimumFractionDigits: 1, maximumFractionDigits: 1,
+});
 const currency = new Intl.NumberFormat("en-GB", {
   style: "currency", currency: "GBP", maximumFractionDigits: 0,
 });
@@ -188,7 +183,7 @@ function create(tag, className, content) {
 function tonnes(value) {
   const amount = Math.abs(value);
   if (amount && amount < 0.01) return (value < 0 ? "−" : "") + "<0.01";
-  return number.format(value).replace("-", "−");
+  return formatExact(Number(value.toFixed(2)));
 }
 
 function coerce(field, value) {
@@ -224,6 +219,12 @@ function readProfiles() {
         values.aiEnergy = values.whPerKTokens;
         // Earlier electricity readings already included electric heating.
         if (values.heat === "electric") values.heat = "none";
+      }
+      if (version < 4) {
+        values.commuteKm = Math.round(values.carMiles * 160.9344) / 100;
+        values.otherKm = Math.round(values.otherMiles * 160.9344) / 100;
+        const spending = [values.clothing, values.homeGoods, values.appliances];
+        if (spending.some(Number.isFinite)) values.shopping = sum(spending.filter(Number.isFinite));
       }
       return {
         id: item.id, name: item.name.slice(0, 50),
@@ -270,11 +271,12 @@ function buildComparisonOptions() {
 
 function buildField(field, quick = false) {
   const group = create("fieldset", quick ? "field quick-field" : "field");
-  group.append(create("legend", quick ? "sr-only" : "", field.label));
-  if (quick && field.quickLabel) {
-    group.classList.add("quick-number");
-    group.append(create("span", "quick-label", field.quickLabel));
+  group.append(create("legend", "sr-only", field.label));
+  const heading = create("div", "field-heading");
+  if (!quick || field.quickLabel) {
+    heading.append(create("span", "field-label", field.quickLabel ?? field.label));
   }
+  const adjustments = create("div", "field-adjustments");
   const buttons = [];
   if (field.choices) {
     const row = create("div", "choices");
@@ -289,13 +291,12 @@ function buildField(field, quick = false) {
       buttons.push({ button, value });
       row.append(button);
     }
-    group.append(row);
+    adjustments.append(row);
   }
 
   let input;
   let slider;
   if (field.unit) {
-    const row = create("div", "numeric-row");
     const control = create("label", "numeric");
     input = create("input");
     input.type = "number";
@@ -304,33 +305,43 @@ function buildField(field, quick = false) {
     input.step = field.integer ? 1 : "any";
     input.setAttribute("aria-label", field.label + " (" + field.unit + ")");
     control.append(input, create("span", "", field.unit));
-    if (field.slider) {
-      slider = create("input");
-      slider.type = "range";
-      const logarithmic = field.slider === "log";
-      slider.min = logarithmic ? 0 : input.min;
-      slider.max = logarithmic ? 601 : field.max;
-      slider.step = logarithmic ? 1 : field.step;
-      slider.setAttribute("aria-label", field.label + " slider");
-      slider.addEventListener("input", () => {
-        const position = slider.valueAsNumber;
-        // Zero has its own stop. The other stops cover 100 to 100 million tokens.
-        profile[field.key] = logarithmic ?
-          (position === 0 ? 0 : Math.round(10 ** (2 + (position - 1) / 100)) / 1e6) : position;
-        render();
-      });
-      row.append(slider);
-    }
+    heading.append(control);
+
+    const logarithmic = field.slider === "log";
+    slider = create("input", "field-slider");
+    slider.type = "range";
+    slider.min = logarithmic ? 0 : input.min;
+    slider.max = logarithmic ? 601 : field.sliderMax ?? field.max;
+    slider.step = logarithmic || field.integer ? 1 :
+      field.step ?? Number((Number(slider.max) - Number(slider.min)).toPrecision(1)) / 100;
+    slider.setAttribute("aria-label", field.label + " slider");
+    slider.addEventListener("input", () => {
+      const position = slider.valueAsNumber;
+      // Zero has its own stop. The other stops cover 100 to 100 million tokens.
+      profile[field.key] = logarithmic ?
+        (position === 0 ? 0 : Math.round(10 ** (2 + (position - 1) / 100)) / 1e6) : position;
+      render();
+    });
     input.addEventListener("input", () => {
       if (Number.isFinite(input.valueAsNumber)) {
         profile[field.key] = coerce(field, input.valueAsNumber);
         render(input);
       }
     });
-    input.addEventListener("blur", () => render());
-    row.append(control);
-    group.append(row);
+    input.addEventListener("blur", () => {
+      input.value = profile[field.key];
+    });
+    for (const control of [input, slider]) {
+      control.addEventListener("wheel", () => {
+        if (document.activeElement === control) control.blur();
+      }, { passive: true });
+    }
+    adjustments.append(slider);
   }
+  const contribution = create("span", "field-impact");
+  contribution.hidden = true;
+  heading.append(contribution);
+  group.append(heading, adjustments);
   if (field.help) {
     const help = create("p", "help", field.help);
     help.id = field.key + "-help";
@@ -338,7 +349,7 @@ function buildField(field, quick = false) {
     if (input) input.setAttribute("aria-describedby", help.id);
     group.append(help);
   }
-  controls.set(field.key, { group, buttons, input, slider });
+  controls.set(field.key, { field, group, buttons, input, slider, contribution });
   return group;
 }
 
@@ -374,8 +385,8 @@ function buildEditor() {
   }
 }
 
-function updateEditor(editing) {
-  for (const [key, { group, buttons, input, slider }] of controls) {
+function updateEditor(emissions, editing) {
+  for (const [key, { field, group, buttons, input, slider, contribution }] of controls) {
     for (const { button, value } of buttons) {
       const active = typeof value === "object" ?
         Object.entries(value).every(([key, item]) => profile[key] === item) :
@@ -385,25 +396,31 @@ function updateEditor(editing) {
     if (input && input !== editing) input.value = profile[key];
     if (slider) {
       const value = profile[key];
-      if (key === "weeklyMTokens") {
+      if (field.slider === "log") {
         const tokens = value * 1e6;
         slider.value = tokens ? Math.max(1, Math.round(1 + 100 * (Math.log10(tokens) - 2))) : 0;
         slider.setAttribute("aria-valuetext", number.format(tokens) + " tokens per week");
       } else {
         slider.value = value;
+        slider.setAttribute("aria-valuetext", formatExact(value) + " " + field.unit);
       }
+    }
+    const impact = field.impact ?? [key];
+    contribution.hidden = !Object.hasOwn(emissions, impact[0]);
+    if (!contribution.hidden) {
+      contribution.textContent = emissionsText(sum(impact.map(part => emissions[part])));
     }
     group.disabled =
       (key === "beef" && profile.meat === 0) ||
-      (["carDays", "carMiles", "otherMiles", "occupants"].includes(key) && profile.car === "none") ||
+      (["carDays", "commuteKm", "otherKm", "occupants"].includes(key) && profile.car === "none") ||
       (["homeType", "climate", "winter", "summer", "indoor"].includes(key) && profile.heat === "none");
   }
   const estimate = byId("heat-estimate");
   estimate.hidden = profile.heat === "none";
   if (!estimate.hidden) {
     const { kWh, winterKW } = spaceHeat(profile);
-    estimate.textContent = "Estimated space heat for the home: " + number.format(Math.round(kWh / 100) * 100) +
-      " kWh/yr · " + number.format(winterKW) + " kW in a typical winter month.";
+    estimate.textContent = "Space heat estimate · " + formatExact(Math.round(kWh / 100) * 100) +
+      " kWh/yr · " + formatExact(winterKW) + " kW in a typical winter month";
   }
 }
 
@@ -412,6 +429,15 @@ const turn = 2 * Math.PI;
 
 function formatExact(value) {
   return precise.format(value).replace("-", "−");
+}
+
+function emissionsText(amount) {
+  if (amount > 0 && amount < 0.01) return formatExact(amount * 1000) + " kg CO₂e/yr";
+  return formatExact(amount) + " t CO₂e/yr";
+}
+
+function chartTotal(amount) {
+  return amount > 0 && amount < 0.01 ? compact.format(amount * 1000) + " kg" : tonnes(amount);
 }
 
 function chartMark(mark, label, detail) {
@@ -482,10 +508,10 @@ function drawPie(container, name, groups, total, reduction = 0) {
       const path = document.createElementNS(svgNamespace, "path");
       path.setAttribute("d", ringPath(start, end, inner, outer));
       path.setAttribute("fill", segment.colour);
-      const share = formatExact(100 * segment.amount / total) + "% of total";
+      const share = percent.format(segment.amount / total) + " of total";
       const parentShare = segment.parent ?
-        " · " + formatExact(100 * segment.amount / segment.parent.amount) + "% of " + segment.parent.label : "";
-      chartMark(path, segment.label, formatExact(segment.amount) + " t CO₂e/yr · " + share + parentShare);
+        " · " + percent.format(segment.amount / segment.parent.amount) + " of " + segment.parent.label : "";
+      chartMark(path, segment.label, emissionsText(segment.amount) + " · " + share + parentShare);
       graphic.append(path);
       start = end;
     }
@@ -502,17 +528,25 @@ function drawPie(container, name, groups, total, reduction = 0) {
     centre.append(create("span", "pie-net", "Net " + tonnes(total - reduction) + " t"));
   }
   pie.append(graphic, centre);
-  container.replaceChildren(pie);
+  const totals = create("ul", "pie-totals");
+  totals.setAttribute("aria-label", name + " category totals per year. Tonnes unless labelled kg.");
+  for (const group of groups) {
+    const item = create("li", "pie-total");
+    item.style.setProperty("--category", group.colour);
+    item.append(create("span", "", group.short ?? group.label),
+      create("strong", "", chartTotal(group.amount)));
+    totals.append(item);
+  }
+  container.replaceChildren(pie, totals);
 }
 
 function emissionsGroups(values) {
-  return categories.map((category, index) => ({
-    ...category,
-    amount: sum(values[index]),
-    parts: category.parts.map(([label, colour], partIndex) => ({
-      label, colour, amount: values[index][partIndex],
-    })),
-  }));
+  return categories.map(category => {
+    const parts = category.parts.map(([label, colour, ...keys]) => ({
+      label, colour, amount: sum(keys.map(key => values[key])),
+    }));
+    return { ...category, parts, amount: sum(parts.map(part => part.amount)) };
+  });
 }
 
 function axisStep(maximum) {
@@ -544,14 +578,19 @@ function drawBars(personal, reference, referenceName) {
   const labels = create("div", "bar-labels");
   for (const [index, group] of series[0].entries()) {
     const pair = create("div", "bar-pair");
-    const caption = create("span", "", group.short ?? group.label);
+    const caption = create("div", "bar-category");
     caption.style.setProperty("--category", group.colour);
+    const totals = create("div", "bar-totals");
+    caption.append(create("span", "bar-caption", group.short ?? group.label), totals);
     labels.append(caption);
 
     for (const [side, groups] of series.entries()) {
       const bar = create("div", side === 0 ? "bar-stack" : "bar-stack reference-stack");
       const { label, colour, amount, parts } = groups[index];
       const owner = side === 0 ? "You" : referenceName;
+      const total = create("span", side === 0 ? "" : "reference-total", chartTotal(amount));
+      total.setAttribute("aria-label", owner + " · " + label + ", " + emissionsText(amount));
+      totals.append(total);
       if (amount) {
         bar.style.top = ordinate(amount);
         bar.style.height = 100 * amount / top + "%";
@@ -560,8 +599,8 @@ function drawBars(personal, reference, referenceName) {
           const segment = create("span", "bar-segment");
           segment.style.flexGrow = part.amount / amount;
           segment.style.setProperty("--segment", part.colour);
-          chartMark(segment, owner + " · " + part.label, formatExact(part.amount) +
-            " t CO₂e/yr · " + formatExact(amount) + " t category total");
+          chartMark(segment, owner + " · " + part.label, emissionsText(part.amount) +
+            " · " + emissionsText(amount) + " category total");
           bar.append(segment);
         }
       } else {
@@ -585,7 +624,8 @@ function setMetric(id, value, label) {
 
 function render(editing) {
   tooltip.hidden = true;
-  const personal = emissionsGroups(calculate(profile));
+  const emissions = calculate(profile);
+  const personal = emissionsGroups(emissions);
   const yourTotal = sum(personal.map(group => group.amount));
   const reduction = profile.donation / profile.price;
   const savedProfile = saved.find(item => item.id === comparisonId);
@@ -616,7 +656,7 @@ function render(editing) {
   drawPie(byId("your-pie"), "You", personal, yourTotal, reduction);
   drawPie(byId("reference-pie"), referenceName, reference, referenceTotal, referenceReduction);
   drawBars(personal, reference, referenceName);
-  updateEditor(editing);
+  updateEditor(emissions, editing);
 }
 
 byId("reset").addEventListener("click", () => {

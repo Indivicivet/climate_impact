@@ -1,28 +1,29 @@
 const categories = [
   { label: "Food", colour: "#268443", parts: [
-    ["Beef", "#13612c"], ["Other meat", "#29954d"], ["Dairy & eggs", "#54b961"], ["Other food", "#8ed686"],
+    ["Beef", "#13612c", "beef"], ["Other meat", "#29954d", "otherMeat"],
+    ["Dairy & eggs", "#54b961", "dairy"], ["Other food", "#8ed686", "otherFood"],
   ] },
-  { label: "Flights", colour: "#763fba", parts: [
-    ["Short haul", "#8d52d1"], ["Long haul", "#bd88eb"],
+  { label: "Travel", colour: "#763fba", parts: [
+    ["Short-haul flights", "#8d52d1", "shortTrips"], ["Long-haul flights", "#bd88eb", "longTrips"],
+    ["Hotels", "#d7b8ef", "hotelNights"],
   ] },
   { label: "Ground travel", short: "Ground", colour: "#1e70bf", parts: [
-    ["Car use", "#1559a2"], ["Car manufacture", "#328bd7"], ["Bus", "#62a8ea"], ["Train", "#a0c7f0"],
+    ["Car use", "#1559a2", "car"], ["Car manufacture", "#328bd7", "carManufacture"],
+    ["Bus", "#62a8ea", "busDays"], ["Train", "#a0c7f0", "trainDays"],
   ] },
   { label: "Home energy", short: "Home", colour: "#c25c08", parts: [
-    ["Appliances, lights & cooling", "#bd530b"], ["Space heating", "#e5821a"],
-    ["Hot water", "#f5b657"],
+    ["Appliances, lights & cooling", "#bd530b", "electricity"],
+    ["Space heating", "#e5821a", "spaceHeating"], ["Hot water", "#f5b657", "hotWater"],
   ] },
   { label: "Goods & services", short: "Goods", colour: "#c13b62", parts: [
-    ["Clothes & shoes", "#962448"], ["Home goods", "#b83e5d"], ["Appliances", "#ce5b87"],
-    ["Phones & computers", "#d04d78"], ["Parcel deliveries", "#eb83a2"],
-    ["Accommodation", "#aa406f"], ["Phone & broadband", "#d26b94"],
-    ["Leisure services", "#efb5c9"],
+    ["Shopping", "#962448", "shopping"], ["Phones & computers", "#d04d78", "phones", "computers"],
+    ["Subscriptions & leisure", "#efb5c9", "telecom", "leisure"],
   ] },
   { label: "Shared services", short: "Shared", colour: "#56617c", parts: [
-    ["Public services", "#56617c"], ["Buildings & capital investment", "#94a0b9"],
+    ["Public services", "#56617c", "publicServices"], ["Buildings & capital investment", "#94a0b9", "capital"],
   ] },
   { label: "AI use", short: "AI", colour: "#00857e", parts: [
-    ["Data-centre electricity", "#007a72"], ["Server manufacture", "#4bbdb0"],
+    ["Data-centre electricity", "#007a72", "aiEnergy"], ["Server manufacture", "#4bbdb0", "aiHardware"],
   ] },
 ];
 
@@ -39,12 +40,9 @@ const homePresets = [
 ];
 
 const purchasePresets = [
-  { clothing: 10, homeGoods: 8, appliances: 2, phones: 1, computers: 0, parcels: 1, hotelNights: 1,
-    hotelRegion: "uk", telecom: 15, leisure: 5 },
-  { clothing: 35, homeGoods: 30, appliances: 5, phones: 1, computers: 1, parcels: 4, hotelNights: 6,
-    hotelRegion: "uk", telecom: 25, leisure: 30 },
-  { clothing: 80, homeGoods: 85, appliances: 15, phones: 2, computers: 2, parcels: 12, hotelNights: 20,
-    hotelRegion: "uk", telecom: 50, leisure: 100 },
+  { shopping: 20, phones: 1, computers: 0, telecom: 15, leisure: 5 },
+  { shopping: 70, phones: 1, computers: 1, telecom: 25, leisure: 30 },
+  { shopping: 180, phones: 2, computers: 2, telecom: 50, leisure: 100 },
 ];
 
 // UK footprint accounts, with other regions scaled by public spending and fixed investment per person.
@@ -55,8 +53,8 @@ const sharedFootprints = {
 
 const initial = {
   meat: 600, beef: 20, dairy: 1800, otherFood: 8500,
-  shortTrips: 1, longTrips: 0, shortKm: 1500, longKm: 6500,
-  car: "petrol", carDays: 3, carMiles: 20, otherMiles: 2500, occupants: 1.4,
+  shortTrips: 1, longTrips: 0, shortKm: 1500, longKm: 6500, hotelNights: 6, hotelRegion: "uk",
+  car: "petrol", carDays: 3, commuteKm: 32, otherKm: 4000, occupants: 1.4,
   busDays: 0, busKm: 8, trainDays: 0, trainKm: 80, travelWeeks: 48,
   ...homePresets[1], ...purchasePresets[1], sharedRegion: "uk",
   weeklyMTokens: 0, aiEnergy: 0.4, aiGrid: grids.world, aiHardware: 0.02,
@@ -67,40 +65,37 @@ const initial = {
 const benchmarks = [
   { id: "uk", name: "United Kingdom", button: "🇬🇧 UK", activities: {
     meat: 1050, beef: 18, dairy: 2500, shortTrips: 1, longTrips: 0.25,
-    carDays: 0, otherMiles: 5400, occupants: 1.5, busDays: 1, trainDays: 0.5,
+    carDays: 0, otherKm: 8700, occupants: 1.5, busDays: 1, trainDays: 0.5,
     trainKm: 30, homeType: "semi", people: 2.4, weeklyMTokens: 0.02,
   } },
   { id: "us", name: "United States", button: "🇺🇸 US", activities: {
     meat: 1550, beef: 27, dairy: 2900, shortTrips: 1.6, longTrips: 0.35, shortKm: 1600,
-    carDays: 0, otherMiles: 11900, occupants: 1.5, busDays: 0.4, trainDays: 0.2, trainKm: 30,
+    carDays: 0, otherKm: 19150, occupants: 1.5, busDays: 0.4, trainDays: 0.2, trainKm: 30,
     homeType: "detached", electricity: 9500, grid: grids.us, winter: 0, summer: 25,
-    indoor: 20, people: 2.5, clothing: 55, homeGoods: 65, parcels: 7, hotelNights: 9, hotelRegion: "us",
+    indoor: 20, people: 2.5, shopping: 125, hotelNights: 9, hotelRegion: "us",
     telecom: 40, leisure: 65, weeklyMTokens: 0.04,
   } },
   { id: "china", name: "China", button: "🇨🇳 China", activities: {
     meat: 925, beef: 10, dairy: 650, shortTrips: 0.45, longTrips: 0.08, shortKm: 1300,
-    carDays: 0, otherMiles: 2450, occupants: 1.6, busDays: 2.5, trainDays: 1.5, trainKm: 23,
+    carDays: 0, otherKm: 3950, occupants: 1.6, busDays: 2.5, trainDays: 1.5, trainKm: 23,
     homeType: "flat", electricity: 3200, grid: grids.china, winter: 1, summer: 26,
-    people: 2.6, clothing: 25, homeGoods: 30, parcels: 7, hotelNights: 4, hotelRegion: "china", telecom: 12,
+    people: 2.6, shopping: 60, hotelNights: 4, hotelRegion: "china", telecom: 12,
     leisure: 15, weeklyMTokens: 0.02,
   } },
   { id: "high-income", name: "High-income countries", button: "Developed world", activities: {
     meat: 1200, beef: 21, dairy: 2400, shortTrips: 1.1, longTrips: 0.28,
-    carDays: 0, otherMiles: 6900, occupants: 1.5, busDays: 1, trainDays: 0.6, trainKm: 28,
+    carDays: 0, otherKm: 11100, occupants: 1.5, busDays: 1, trainDays: 0.6, trainKm: 28,
     homeType: "semi", electricity: 5100, grid: 0.35, winter: 3, summer: 22, people: 2.5,
-    clothing: 45, homeGoods: 50, parcels: 5, hotelNights: 7, telecom: 30, leisure: 45,
+    shopping: 100, hotelNights: 7, telecom: 30, leisure: 45,
     weeklyMTokens: 0.03,
   } },
   { id: "world", name: "World average", button: "🌐 World", activities: {
     meat: 565, beef: 17, dairy: 1200, otherFood: 7500, shortTrips: 0.27, longTrips: 0.08,
-    carDays: 0, otherMiles: 2300, occupants: 1.7, busDays: 2, trainDays: 0.5, trainKm: 25,
+    carDays: 0, otherKm: 3700, occupants: 1.7, busDays: 2, trainDays: 0.5, trainKm: 25,
     homeType: "terrace", electricity: 2800, grid: grids.world, winter: 10, summer: 26,
-    indoor: 19, people: 3.5, clothing: 16, homeGoods: 20, phones: 1, computers: 0.5,
-    parcels: 2, hotelNights: 2, telecom: 12, leisure: 12, weeklyMTokens: 0.01,
+    indoor: 19, people: 3.5, shopping: 41, phones: 1, computers: 0.5, hotelNights: 2, telecom: 12, leisure: 12, weeklyMTokens: 0.01,
   } },
 ];
-
-const kmPerMile = 1.609344;
 
 function spaceHeat(profile) {
   const midpoint = (profile.winter + profile.summer) / 2;
@@ -122,7 +117,7 @@ function calculate(profile) {
   const meatKg = profile.meat * 52 / 1000;
   const beefShare = profile.beef / 100;
   const carKm = profile.car === "none" ? 0 :
-    (profile.carDays * profile.carMiles * profile.travelWeeks + profile.otherMiles) * kmPerMile;
+    profile.carDays * profile.commuteKm * profile.travelWeeks + profile.otherKm;
   const carFactor = {
     none: 0, petrol: 0.21081, hybrid: 0.16276, electric: 0.205 * profile.grid,
   }[profile.car];
@@ -132,21 +127,31 @@ function calculate(profile) {
   }[profile.heat];
   const annualMTokens = profile.weeklyMTokens * 52;
 
-  return [
-    [meatKg * beefShare * 60, meatKg * (1 - beefShare) * 10,
-      profile.dairy * 52 / 1000 * 3, profile.otherFood * 52 / 1000 * 2],
-    [2 * profile.shortTrips * profile.shortKm * (0.12576 + 0.02249),
-      2 * profile.longTrips * profile.longKm * (0.11704 + 0.02461)],
-    [carKm * carFactor / profile.occupants, carKm * 0.04 / profile.occupants,
-      2 * profile.busDays * profile.busKm * profile.travelWeeks * 0.128,
-      2 * profile.trainDays * profile.trainKm * profile.travelWeeks * 0.03989],
-    [profile.electricity * profile.grid / profile.people,
-      spaceHeat(profile).kWh * heatFactor / profile.people, 600 * heatFactor],
-    [12 * profile.clothing * 0.35, 12 * profile.homeGoods * 0.45, 12 * profile.appliances * 1.66,
-      (50 * profile.phones + 180 * profile.computers) / 5,
-      12 * profile.parcels * 0.2, profile.hotelNights * hotelFactors[profile.hotelRegion],
-      12 * profile.telecom * 0.1, 12 * profile.leisure * 0.25],
-    sharedFootprints[profile.sharedRegion],
-    [annualMTokens * profile.aiEnergy * profile.aiGrid, annualMTokens * profile.aiHardware],
-  ].map(parts => parts.map(kg => kg / 1000));
+  const [publicServices, capital] = sharedFootprints[profile.sharedRegion];
+  const kg = {
+    beef: meatKg * beefShare * 60,
+    otherMeat: meatKg * (1 - beefShare) * 10,
+    dairy: profile.dairy * 52 / 1000 * 3,
+    otherFood: profile.otherFood * 52 / 1000 * 2,
+    shortTrips: 2 * profile.shortTrips * profile.shortKm * (0.12576 + 0.02249),
+    longTrips: 2 * profile.longTrips * profile.longKm * (0.11704 + 0.02461),
+    hotelNights: profile.hotelNights * hotelFactors[profile.hotelRegion],
+    car: carKm * carFactor / profile.occupants,
+    carManufacture: carKm * 0.04 / profile.occupants,
+    busDays: 2 * profile.busDays * profile.busKm * profile.travelWeeks * 0.128,
+    trainDays: 2 * profile.trainDays * profile.trainKm * profile.travelWeeks * 0.03989,
+    electricity: profile.electricity * profile.grid / profile.people,
+    spaceHeating: spaceHeat(profile).kWh * heatFactor / profile.people,
+    hotWater: 600 * heatFactor,
+    shopping: 12 * profile.shopping * 0.5,
+    phones: 50 * profile.phones / 5,
+    computers: 180 * profile.computers / 5,
+    telecom: 12 * profile.telecom * 0.1,
+    leisure: 12 * profile.leisure * 0.25,
+    publicServices,
+    capital,
+    aiEnergy: annualMTokens * profile.aiEnergy * profile.aiGrid,
+    aiHardware: annualMTokens * profile.aiHardware,
+  };
+  return Object.fromEntries(Object.entries(kg).map(([key, value]) => [key, value / 1000]));
 }

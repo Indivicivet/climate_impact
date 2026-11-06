@@ -78,9 +78,10 @@ p { margin: 0; color: var(--muted); }
   max-width: 100%;
   overflow-wrap: anywhere;
 }
-#your-pie, #reference-pie { width: min(100%, 310px); }
+#your-pie, #reference-pie { width: 100%; min-width: 0; }
 .pie {
-  width: 100%;
+  width: min(100%, 310px);
+  margin-inline: auto;
   aspect-ratio: 1;
   display: grid;
   place-items: center;
@@ -107,6 +108,20 @@ p { margin: 0; color: var(--muted); }
   font-variant-numeric: tabular-nums;
 }
 .pie-net { margin-top: 3px; font-size: 0.9em; color: var(--accent); font-weight: 650; }
+.pie-totals {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 2px 8px;
+  margin: 5px 0 0;
+  padding: 0;
+  list-style: none;
+  text-align: left;
+  font-size: 0.75rem;
+  font-variant-numeric: tabular-nums;
+}
+.pie-total { display: flex; align-items: baseline; gap: 4px; min-width: 0; }
+.pie-total::before { content: ""; align-self: center; width: 6px; height: 6px; background: var(--category); border-radius: 1px; flex: none; }
+.pie-total strong { margin-left: auto; white-space: nowrap; }
 .reference-info { display: flex; flex-wrap: wrap; justify-content: center; gap: 2px 8px; font-size: 0.82rem; color: var(--muted); }
 .profile-actions { display: flex; gap: 5px; justify-content: center; }
 
@@ -161,8 +176,8 @@ p { margin: 0; color: var(--muted); }
 .zero-bar::before { content: ""; border-top: 1px solid var(--segment); margin-top: 2px; }
 .reference-stack.zero-bar::before { border-top-style: dashed; }
 .bar-labels { margin: 6px 0 0 var(--axis); text-align: center; font-size: clamp(0.68rem, 1.2vw, 0.88rem); font-weight: 650; }
-.bar-labels span { padding-inline: 1px; overflow-wrap: anywhere; }
-.bar-labels span::before {
+.bar-caption { overflow-wrap: anywhere; }
+.bar-caption::before {
   content: "";
   display: block;
   height: 3px;
@@ -171,6 +186,15 @@ p { margin: 0; color: var(--muted); }
   margin: 0 auto 3px;
   background: var(--category);
 }
+.bar-totals {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  gap: 0 6px;
+  font-size: 0.72rem;
+  font-variant-numeric: tabular-nums;
+}
+.reference-total { color: var(--muted); font-weight: 500; }
 .chart-tooltip {
   position: fixed;
   z-index: 3;
@@ -198,23 +222,27 @@ p { margin: 0; color: var(--muted); }
 .editor-title { display: flex; align-items: center; gap: 6px; font-weight: 700; padding-right: 65px; }
 .swatch { display: inline-block; border-radius: 2px; width: 10px; height: 10px; flex: none; }
 .quick-fields { display: flex; flex-wrap: wrap; gap: 4px 12px; margin-top: 4px; }
-.field { border: 0; padding: 0; margin: 0 0 10px; min-width: 0; }
+.field { border: 0; padding: 0; margin: 0 0 8px; min-width: 0; }
 .field:disabled { opacity: 0.55; }
-.field legend { font-size: 0.9rem; font-weight: 650; padding: 0; }
-.choices, .numeric-row { display: flex; flex-wrap: wrap; align-items: center; gap: 4px; margin-top: 4px; }
+.field-heading, .field-adjustments, .choices { display: flex; flex-wrap: wrap; align-items: center; gap: 4px 8px; }
+.field-heading { font-size: 0.86rem; }
+.field-label { font-weight: 650; }
+.field-impact { margin-left: auto; color: var(--muted); font-size: 0.78rem; white-space: nowrap; font-variant-numeric: tabular-nums; }
+.field-adjustments { margin-top: 3px; }
+.field-adjustments:empty { display: none; }
+.choices { gap: 4px; }
 .choices button { padding-inline: 7px; font-size: 0.88rem; }
-.numeric-row > input { flex: 1 1 90px; width: 90px; min-width: 0; }
+.field-slider { flex: 1 1 135px; min-width: 0; margin: 4px 1px; }
 .numeric { display: inline-flex; align-items: center; gap: 4px; color: var(--muted); font-size: 0.81rem; white-space: nowrap; }
-.numeric input { width: 83px; font-size: 0.88rem; font-variant-numeric: tabular-nums; }
+.numeric input { width: 92px; font-size: 0.88rem; font-variant-numeric: tabular-nums; }
 .help { margin-top: 4px; font-size: 0.82rem; }
 .section-note { margin: 0 0 8px; }
-.quick-field { display: flex; align-items: center; flex-wrap: wrap; gap: 4px 6px; margin: 0; }
-.quick-field .numeric input { width: 64px; }
-.quick-field .help { flex-basis: 100%; }
-.quick-field .choices, .quick-field .numeric-row { margin-top: 0; }
-.quick-number .numeric input { width: 51px; }
-.quick-label { font-size: 0.86rem; }
-.editor-section:not(:has(.editor-details[open])) :is(.quick-field .help, .quick-field input[type="range"], .quick-number .choices) {
+.quick-field { margin: 0; }
+.quick-field .numeric input { width: 70px; }
+.editor-section:has(.editor-details[open]) .quick-fields { display: grid; gap: 8px; }
+.editor-section:not(:has(.editor-details[open])) .quick-field { display: flex; align-items: center; flex-wrap: wrap; gap: 4px 6px; }
+.editor-section:not(:has(.editor-details[open])) .quick-field .field-adjustments { margin-top: 0; }
+.editor-section:not(:has(.editor-details[open])) .quick-field :is(.help, .field-slider, .field-impact, .field-adjustments:not(:has(.choices))) {
   display: none;
 }
 .editor-details > summary {
@@ -239,15 +267,22 @@ p { margin: 0; color: var(--muted); }
 @media (width > 900px) {
   .analysis {
     --bar-height: clamp(90px, 24dvh, 210px);
+    --chart-reserve: 390px;
     position: sticky;
     top: 16px;
     max-height: calc(100dvh - 32px);
     overflow-y: auto;
   }
 
-  #your-pie, #reference-pie { width: min(100%, clamp(90px, calc(100dvh - var(--bar-height) - 300px), 310px)); }
-  .pie-centre strong { font-size: clamp(1rem, 4dvh, 3rem); }
+  .pie { width: min(100%, clamp(90px, calc(100dvh - var(--bar-height) - var(--chart-reserve)), 310px)); }
+  .pie-centre strong { font-size: clamp(1rem, 3.4dvh, 2.5rem); }
   .bar-plot { height: var(--bar-height); }
+}
+
+@media (min-width: 1150px), (650px <= width <= 900px) {
+  .analysis { --chart-reserve: 322px; }
+  #your-pie, #reference-pie { display: grid; grid-template-columns: minmax(0, 1fr) minmax(76px, 0.46fr); align-items: center; gap: 8px; }
+  .pie-totals { grid-template-columns: minmax(0, 1fr); margin-top: 0; }
 }
 
 @media (max-width: 900px) {
@@ -261,6 +296,8 @@ p { margin: 0; color: var(--muted); }
   .metrics { gap: 3px 9px; padding: 6px 8px; font-size: 0.78rem; }
   .comparison-options button, .profile-actions button { font-size: 0.78rem; padding-inline: 5px; }
   .reference-info { font-size: 0.75rem; }
+  .pie-totals { gap: 1px 5px; font-size: 0.69rem; }
   .bar-chart { --axis: 28px; }
   .bar-plot { height: 170px; }
+  .bar-totals { display: grid; gap: 1px; }
 }
