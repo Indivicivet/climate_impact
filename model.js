@@ -40,11 +40,20 @@ const busKmPerHour = 24;
 const trainKmPerHour = 80;
 const devicesAndTelecomKg = 50 / 2 + 180 / 5 + 12 * 25 * 0.1;
 
+const dietPresets = [
+  { meatServings: 0, dairyServings: 0 },
+  { meatServings: 0, dairyServings: 12 },
+  { meatServings: 2, dairyServings: 7 },
+  { meatServings: 4, dairyServings: 12 },
+  { meatServings: 8, dairyServings: 20 },
+];
+
 const travelPresets = [
   { shortTrips: 1, longTrips: 0, hotelNights: 5 },
   { shortTrips: 2, longTrips: 0, hotelNights: 10 },
   { shortTrips: 0, longTrips: 1, hotelNights: 14 },
   { shortTrips: 0, longTrips: 2, hotelNights: 28 },
+  { shortTrips: 0, longTrips: 0, hotelNights: 0 },
 ];
 
 const homePresets = [
@@ -69,9 +78,9 @@ const sharedFootprints = {
 };
 
 const initial = {
-  meat: 600, beef: 20, dairy: 1800, otherFood: 8500,
+  ...dietPresets[3], calories: 2000, beef: 20,
   ...travelPresets[0], shortKm: 1500, longKm: 6500, hotelRegion: "uk", hotelType: "typical",
-  car: "petrol", carDays: 3, commuteKm: 32, otherKm: 4000, occupants: 1.4,
+  car: "petrol", carDays: 3, commuteKm: 32, otherKm: 2900,
   busMinutes: 0, trainMinutes: 0,
   ...homePresets[1], ...purchasePresets[1], sharedRegion: "uk",
   weeklyMTokens: 0, aiEnergy: 0.4, aiGrid: grids.world, aiHardware: 0.02,
@@ -81,34 +90,34 @@ const initial = {
 // Illustrative activity mixes. Fractional journeys represent a per-person annual average.
 const benchmarks = [
   { id: "uk", name: "United Kingdom", button: "🇬🇧 UK", activities: {
-    meat: 1050, beef: 18, dairy: 2500, shortTrips: 1, longTrips: 0.25, hotelNights: 6,
-    carDays: 0, otherKm: 8700, occupants: 1.5, busMinutes: 40, trainMinutes: 22.5,
+    meatServings: 7, beef: 18, dairyServings: 16.7, shortTrips: 1, longTrips: 0.25, hotelNights: 6,
+    carDays: 0, otherKm: 5800, busMinutes: 40, trainMinutes: 22.5,
     homeType: "semi", people: 2.4, weeklyMTokens: 0.02,
   } },
   { id: "us", name: "United States", button: "🇺🇸 US", activities: {
-    meat: 1550, beef: 27, dairy: 2900, shortTrips: 1.6, longTrips: 0.35, shortKm: 1600,
-    carDays: 0, otherKm: 19150, occupants: 1.5, busMinutes: 16, trainMinutes: 9,
+    meatServings: 10.3, beef: 27, dairyServings: 19.3, shortTrips: 1.6, longTrips: 0.35, shortKm: 1600,
+    carDays: 0, otherKm: 12770, busMinutes: 16, trainMinutes: 9,
     homeType: "detached", electricity: 9500, grid: grids.us, winter: 0, summer: 25,
     indoor: 20, people: 2.5, shopping: 125, hotelNights: 9, hotelRegion: "us",
     leisure: 65, weeklyMTokens: 0.04,
   } },
   { id: "china", name: "China", button: "🇨🇳 China", activities: {
-    meat: 925, beef: 10, dairy: 650, shortTrips: 0.45, longTrips: 0.08, shortKm: 1300,
-    carDays: 0, otherKm: 3950, occupants: 1.6, busMinutes: 100, trainMinutes: 51.75,
+    meatServings: 6.2, beef: 10, dairyServings: 4.3, shortTrips: 0.45, longTrips: 0.08, shortKm: 1300,
+    carDays: 0, otherKm: 2470, busMinutes: 100, trainMinutes: 51.75,
     homeType: "flat", electricity: 3200, grid: grids.china, winter: 1, summer: 26,
     people: 2.6, shopping: 60, hotelNights: 4, hotelRegion: "china",
     leisure: 15, weeklyMTokens: 0.02,
   } },
   { id: "high-income", name: "High-income countries", button: "Developed world", activities: {
-    meat: 1200, beef: 21, dairy: 2400, shortTrips: 1.1, longTrips: 0.28,
-    carDays: 0, otherKm: 11100, occupants: 1.5, busMinutes: 40, trainMinutes: 25.2,
+    meatServings: 8, beef: 21, dairyServings: 16, shortTrips: 1.1, longTrips: 0.28,
+    carDays: 0, otherKm: 7400, busMinutes: 40, trainMinutes: 25.2,
     homeType: "semi", electricity: 5100, grid: 0.35, winter: 3, summer: 22, people: 2.5,
     shopping: 100, hotelNights: 7, leisure: 45,
     weeklyMTokens: 0.03,
   } },
   { id: "world", name: "World average", button: "🌐 World", activities: {
-    meat: 565, beef: 17, dairy: 1200, otherFood: 7500, shortTrips: 0.27, longTrips: 0.08,
-    carDays: 0, otherKm: 3700, occupants: 1.7, busMinutes: 80, trainMinutes: 18.75,
+    meatServings: 3.8, beef: 17, dairyServings: 8, shortTrips: 0.27, longTrips: 0.08,
+    carDays: 0, otherKm: 2180, busMinutes: 80, trainMinutes: 18.75,
     homeType: "terrace", electricity: 2800, grid: grids.world, winter: 10, summer: 26,
     indoor: 19, people: 3.5, shopping: 41, hotelNights: 2, leisure: 12, weeklyMTokens: 0.01,
   } },
@@ -118,8 +127,7 @@ function spaceEnergy(profile) {
   const midpoint = (profile.winter + profile.summer) / 2;
   const amplitude = Math.abs(profile.summer - profile.winter) / 2;
   const balance = profile.indoor - 4;
-  const coolingTarget = profile.coolTo === 40 ? Infinity :
-    Math.max(profile.coolTo, profile.heat === "none" ? 0 : profile.indoor);
+  const coolingTarget = profile.heat === "none" ? profile.coolTo : Math.max(profile.coolTo, profile.indoor);
   let heatingDays = 0;
   let coolingDays = 0;
   for (let day = 0; day < 365; day++) {
@@ -135,8 +143,18 @@ function spaceEnergy(profile) {
   };
 }
 
+function dietEnergy(profile) {
+  const weeklyAnimalCalories = profile.meatServings * 300 + profile.dairyServings * 120;
+  const weeklyCalories = profile.calories * 7;
+  return {
+    portionScale: weeklyAnimalCalories > weeklyCalories ? weeklyCalories / weeklyAnimalCalories : 1,
+    otherCalories: Math.max(0, weeklyCalories - weeklyAnimalCalories) / 7,
+  };
+}
+
 function calculate(profile) {
-  const meatKg = profile.meat * 52 / 1000;
+  const { portionScale, otherCalories } = dietEnergy(profile);
+  const annualMeatKg = profile.meatServings * 0.15 * 365 / 7 * portionScale;
   const beefShare = profile.beef / 100;
   const carKm = profile.car === "none" ? 0 :
     profile.carDays * profile.commuteKm * travelWeeks + profile.otherKm;
@@ -152,15 +170,15 @@ function calculate(profile) {
 
   const [publicServices, capital] = sharedFootprints[profile.sharedRegion];
   const kg = {
-    beef: meatKg * beefShare * 60,
-    otherMeat: meatKg * (1 - beefShare) * 10,
-    dairy: profile.dairy * 52 / 1000 * 3,
-    otherFood: profile.otherFood * 52 / 1000 * 2,
+    beef: annualMeatKg * beefShare * 60,
+    otherMeat: annualMeatKg * (1 - beefShare) * 10,
+    dairy: profile.dairyServings * 0.6 * 365 / 7 * portionScale,
+    otherFood: otherCalories * 2.47 / 2000 * 365,
     shortTrips: 2 * profile.shortTrips * profile.shortKm * (0.12576 + 0.02249),
     longTrips: 2 * profile.longTrips * profile.longKm * (0.11704 + 0.02461),
     hotelNights: profile.hotelNights * hotelFactors[profile.hotelRegion][profile.hotelType],
-    car: carKm * carFactor / profile.occupants,
-    carManufacture: carKm * 0.04 / profile.occupants,
+    car: carKm * carFactor,
+    carManufacture: carKm * 0.04,
     busMinutes: profile.busMinutes / 60 * busKmPerHour * travelWeeks * 0.128,
     trainMinutes: profile.trainMinutes / 60 * trainKmPerHour * travelWeeks * 0.03989,
     electricity: profile.electricity * profile.grid / profile.people,

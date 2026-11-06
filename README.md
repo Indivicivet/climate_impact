@@ -2,8 +2,9 @@
 
 Open `index.html` in a browser. Choose the closest preset in each row, then open **More** to adjust it. Compare your estimate with a modelled lifestyle or a saved profile. Saved profiles stay in your browser.
 
+- **Food.** Choose a diet and an approximate daily calorie intake. Adjust meat, fish, dairy and egg portions under More. The model fills the remaining calories with plant-based food and drink.
 - **Home energy.** Pick a whole-home preset or enter your dwelling type, heating and cooling targets, outdoor climate and heating system. Appliance electricity can come from a preset or your bill.
-- **Travel.** Choose a holiday preset or enter return flights and hotel room-nights. Ground travel uses kilometres for cars and weekly minutes for bus and train.
+- **Travel.** Choose a holiday preset or enter return flights and hotel room-nights. Car commutes assume solo driving. For other car trips, enter your share of the distance. Bus and train use weekly minutes.
 - **Goods and services.** Enter your share of shopping and leisure spending. Devices and telecom use a fixed annual allowance.
 - **Shared services.** Pick where you live. The estimate allocates an average share of public services and investment in buildings and other assets.
 - **AI.** Enter processed text tokens, including input and output. The plan examples change volume. The energy and hardware rates are separate.

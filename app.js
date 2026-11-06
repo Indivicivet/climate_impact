@@ -1,26 +1,29 @@
 const sections = [
   {
-    title: "Food", category: 0, quick: ["meat"],
+    title: "Food", category: 0, quick: ["dietPreset", "calories"],
     common: [
-      { key: "meat", label: "Meat per week", quickLabel: "Meat", unit: "g/wk", max: 5000, step: 50,
-        impact: ["beef", "otherMeat"], choices: [
-        ["No meat", 0], ["250 g", 250], ["600 g", 600], ["1.2 kg", 1200], ["Vegan", { meat: 0, dairy: 0 }],
-      ], help: "A typical portion here is 150 g. Count fish with other meat." },
-      { key: "beef", label: "Beef as a share of meat", unit: "%", max: 100, integer: true,
-        choices: [["0%", 0], ["10%", 10], ["20%", 20], ["50%", 50]] },
-      { key: "dairy", label: "Dairy and eggs per week", unit: "g", max: 12000, step: 100,
-        choices: [["None", 0], ["Low · 700 g", 700], ["Medium · 1.8 kg", 1800], ["High · 3 kg", 3000]] },
+      { key: "dietPreset", label: "Diet", choices: [
+        ["Vegan", dietPresets[0]], ["Veggie", dietPresets[1]], ["Low meat", dietPresets[2]],
+        ["Med meat", dietPresets[3]], ["High meat", dietPresets[4]],
+      ] },
+      { key: "calories", label: "Daily calories", quickLabel: "Daily calories", unit: "kcal/day",
+        min: 1000, max: 4000, step: 100 },
     ],
     detail: [
-      { key: "otherFood", label: "Other food and drink per week", unit: "g", max: 30000, step: 100,
-        choices: [["Low · 6 kg", 6000], ["Medium · 8.5 kg", 8500], ["High · 12 kg", 12000]],
-        help: "Staples, fruit, vegetables, plant proteins, snacks and drinks. Leave out tap water." },
+      { key: "meatServings", label: "Meat and fish", unit: "portions/wk", max: 35, sliderMax: 14, step: 0.5,
+        impact: ["beef", "otherMeat"], help: "One portion is about a palm-sized serving (150 g)." },
+      { key: "beef", label: "Beef as a share of meat", unit: "%", max: 100, integer: true,
+        choices: [["0%", 0], ["10%", 10], ["20%", 20], ["50%", 50]] },
+      { key: "dairyServings", label: "Dairy and eggs", unit: "portions/wk", max: 80, sliderMax: 28, step: 0.5,
+        impact: ["dairy"], help: "One portion: a glass of milk, a pot of yogurt, a piece of cheese or two eggs." },
     ],
+    note: "The remaining calories are estimated as plant-based food and drink.",
   },
   {
     title: "Travel", category: 1, quick: ["travelPreset"],
     common: [
       { key: "travelPreset", label: "Holidays", choices: [
+        ["None", travelPresets[4]],
         ["1 short holiday", travelPresets[0]], ["2 short holidays", travelPresets[1]],
         ["1 long holiday", travelPresets[2]], ["2 long holidays", travelPresets[3]],
       ] },
@@ -53,14 +56,14 @@ const sections = [
         choices: [["15 km", 15], ["32 km", 32], ["65 km", 65]] },
     ],
     detail: [
-      { key: "otherKm", label: "Other car travel", unit: "km/yr", max: 130000, step: 100, sliderMax: 30000 },
-      { key: "occupants", label: "Average people in car, including you", unit: "people", min: 1, max: 8, step: 0.1 },
+      { key: "otherKm", label: "Other car travel, your share", unit: "km/yr", max: 130000, step: 100, sliderMax: 30000,
+        help: "For shared trips, divide the distance by the number of people in the car." },
       { key: "busMinutes", label: "Total time on the bus", unit: "min/wk", max: 10080, sliderMax: 600, step: 5,
         choices: [["None", 0], ["Commute · 20 min each way", 200]] },
       { key: "trainMinutes", label: "Total time on the train", unit: "min/wk", max: 10080, sliderMax: 1200, step: 5,
         choices: [["None", 0], ["20 min each way", 200], ["1 h each way", 600]] },
     ],
-    note: "Commute presets use five days per week. The model uses 48 weeks per year.",
+    note: "Car commutes assume a solo driver. Transit presets use five days per week; all commutes use 48 weeks per year.",
   },
   {
     title: "Home energy", category: 3, quick: ["homePreset"],
@@ -81,8 +84,7 @@ const sections = [
       { key: "winter", label: "Coldest month average", unit: "°C", min: -40, max: 40, step: 0.5 },
       { key: "summer", label: "Warmest month average", unit: "°C", min: -20, max: 50, step: 0.5 },
       { key: "indoor", label: "Heat to", unit: "°C", min: 10, max: 30, step: 0.5 },
-      { key: "coolTo", label: "Cool to", unit: "°C", min: 16, max: 40, step: 0.5,
-        help: "40 °C turns off modelled air conditioning." },
+      { key: "coolTo", label: "Cool to", unit: "°C", min: 16, max: 40, step: 0.5 },
       { key: "heat", label: "Space and water heating", impact: ["spaceHeating", "hotWater"], choices: [
         ["Gas boiler", "gas"], ["Oil boiler", "oil"], ["Heat pump", "heatPump"],
         ["Electric resistance", "electric"], ["No separate heating", "none"],
@@ -107,7 +109,7 @@ const sections = [
     ],
     detail: [
       { key: "shopping", label: "Shopping & deliveries", unit: "£/mo", max: 15000, step: 5, sliderMax: 1500,
-        help: "Clothes, home goods and appliances. Average occasional purchases and enter your share." },
+        help: "Clothes, home goods and appliances." },
       { key: "leisure", label: "Gym, cinema & events", unit: "£/mo", max: 5000, step: 5, sliderMax: 500 },
     ],
     note: "Devices & telecom · " + devicesAndTelecomKg + " kg CO₂e/yr assumed",
@@ -152,7 +154,7 @@ const sections = [
 
 const byId = id => document.getElementById(id);
 const sum = values => values.reduce((total, value) => total + value, 0);
-const storageVersion = 5;
+const storageVersion = 6;
 const storageKey = "climate-impact.profiles.v" + storageVersion;
 const fields = sections.flatMap(section => [...section.common, ...(section.detail ?? [])]);
 const modelFields = fields.filter(field => Object.hasOwn(initial, field.key));
@@ -232,6 +234,14 @@ function readProfiles() {
         // Keep the old annual transit distance when converting it to a 48-week average.
         values.busMinutes = 120 * values.busDays * values.busKm / busKmPerHour * weeks / travelWeeks;
         values.trainMinutes = 120 * values.trainDays * values.trainKm / trainKmPerHour * weeks / travelWeeks;
+      }
+      if (version < 6) {
+        values.meatServings = Math.round(values.meat / 15) / 10;
+        values.dairyServings = Math.round(values.dairy / 15) / 10;
+        const occupancy = Number.isFinite(values.occupants) ? Math.max(1, Math.min(8, values.occupants)) : 1.4;
+        // Other kilometres used to be entered for the whole car; commuting is now always solo.
+        const oldOtherKm = Number.isFinite(values.otherKm) ? values.otherKm : 4000;
+        values.otherKm = Math.round(oldOtherKm / occupancy * 100) / 100;
       }
       return {
         id: item.id, name: item.name.slice(0, 50),
@@ -380,6 +390,12 @@ function buildEditor() {
     summary.setAttribute("aria-label", "More " + section.title.toLowerCase() + " settings");
     const body = create("div", "editor-body");
     if (section.note) body.append(create("p", "help section-note", section.note));
+    if (section.category === 0) {
+      const warning = create("p", "help section-note", "These portions exceed your daily calories. The estimate scales them down to fit.");
+      warning.id = "diet-estimate";
+      warning.setAttribute("aria-live", "polite");
+      body.append(warning);
+    }
     if (section.category === 3) {
       const estimate = create("p", "help section-note");
       estimate.id = "heat-estimate";
@@ -427,10 +443,11 @@ function updateEditor(emissions, editing) {
       contribution.textContent = emissionsText(sum(impact.map(part => emissions[part])));
     }
     group.disabled =
-      (key === "beef" && profile.meat === 0) ||
-      (["carDays", "commuteKm", "otherKm", "occupants"].includes(key) && profile.car === "none") ||
+      (key === "beef" && profile.meatServings === 0) ||
+      (["carDays", "commuteKm", "otherKm"].includes(key) && profile.car === "none") ||
       (key === "indoor" && profile.heat === "none");
   }
+  byId("diet-estimate").hidden = dietEnergy(profile).portionScale === 1;
   const estimate = byId("heat-estimate");
   estimate.hidden = profile.heat === "none";
   if (!estimate.hidden) {

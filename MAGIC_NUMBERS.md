@@ -4,16 +4,24 @@ The calculator estimates annual tonnes of CO₂ equivalent (t CO₂e) per person
 
 ## Food
 
-Multiply weekly grams by 52 ÷ 1,000 to get annual kg of food. Multiply that mass by the applicable factor. The beef percentage splits the entered meat weight. Include food eaten away from home.
+Enter approximate total intake, including food eaten away from home. The model takes meat, dairy and egg calories out of the daily total and estimates the remainder as plant-based food and drink. Changing the diet preset keeps total calories and beef share fixed. If the entered portions would exceed the calorie total, the model scales the two portion counts down by the same proportion for the calculation and shows a note under More.
 
-| Food | kg CO₂e per kg of food | Basis |
+| Food | Energy assumption | Emissions assumption |
 | --- | ---: | --- |
-| Beef | 60 | Illustrative mix of roughly 40% beef-herd and 60% dairy-herd beef. The study's global means are about 99 and 33 respectively. |
-| Other meat and fish | 10 | Rounded proxy near poultry at 9.9. Pork is about 12.3. Lamb and seafood vary widely. |
-| Dairy and eggs | 3 | Milk-heavy mix. Milk is about 3.2, eggs about 4.7 and cheese about 24, so cheese-heavy diets can exceed this estimate. |
-| Other food and drink | 2 | Illustrative mix of grains, produce, legumes, snacks and drinks. There is no single factor for this basket. |
+| Beef | 300 kcal per 150 g portion | 60 kg CO₂e/kg. An illustrative blend of beef-herd and dairy-herd beef, whose global means are about 99 and 33. |
+| Other meat and fish | 300 kcal per 150 g portion | 10 kg CO₂e/kg, near poultry at 9.9. Pork is about 12.3; lamb and seafood vary widely. |
+| Dairy and eggs | 120 kcal per portion | 0.6 kg CO₂e/portion. A rounded blend of milk (200 mL), yogurt (125 g, using milk as a proxy), cheese (30 g) and eggs (two). |
+| Other food and drink | Remaining daily kcal | 2.47 kg CO₂e per 2,000 kcal, the median modelled footprint of vegan diets in the UK EPIC-Oxford cohort at equal energy intake. We use it as a proxy for the remaining calories in all diets. |
 
-The meat presets are 0, 250, 600 and 1,200 g per week. At the 600 g preset with 20% beef, meat contributes about 624 kg CO₂e per year. The default also includes 1.8 kg of dairy and eggs and 8.5 kg of other food and drink each week. These are example quantities. [Poore & Nemecek (2018)](https://doi.org/10.1126/science.aaq0216) · [Food factors by kilogram](https://ourworldindata.org/grapher/ghg-per-kg-poore)
+The portion energies are rounded examples informed by UK food composition data. Multiply weekly portions by 365 ÷ 7, then by the portion emissions. Apply the beef percentage by weight within meat and fish. Multiply remaining daily calories by 365 × 2.47 ÷ 2,000. The vegan result uses the study's estimate directly; the other presets are illustrative mixes using this calculator's factors, not the study's observed diet groups. Equal calorie intakes can have very different footprints. [Scarborough et al. (2023), Table 3](https://doi.org/10.1038/s43016-023-00795-w) · [UK food composition data](https://www.gov.uk/government/publications/composition-of-foods-integrated-dataset-cofid) · [Poore & Nemecek (2018)](https://doi.org/10.1126/science.aaq0216) · [Food factors by kilogram](https://ourworldindata.org/grapher/ghg-per-kg-poore)
+
+| Preset | Meat and fish portions/week | Dairy and egg portions/week | Estimate at 2,000 kcal/day and 20% beef, t CO₂e/yr |
+| --- | ---: | ---: | ---: |
+| Vegan | 0 | 0 | 0.90 |
+| Veggie | 0 | 12 | 1.18 |
+| Low meat | 2 | 7 | 1.34 |
+| Med meat | 4 | 12 | 1.73 |
+| High meat | 8 | 20 | 2.47 |
 
 ## Travel
 
@@ -40,7 +48,7 @@ Rates are kg CO₂e per occupied room-night. HCMI allocates property energy and,
 
 ## Ground travel
 
-Car distance is round-trip commute kilometres × days per week × weeks, plus other kilometres driven or ridden. Divide vehicle emissions by average occupancy.
+Car distance is round-trip commute kilometres × days per week × 48, plus your share of other car kilometres. The commute assumes one person. For other shared journeys, enter the distance divided by the number of people in the car (for example, enter 100 km for a 200 km trip shared by two people).
 
 | Ground travel | Factor | Basis |
 | --- | ---: | --- |
@@ -52,6 +60,8 @@ Car distance is round-trip commute kilometres × days per week × weeks, plus ot
 | Train | 0.03989 kg/passenger-km | DESNZ national rail, 0.03092 + 0.00897 upstream. |
 
 Enter total weekly minutes for bus and rail. The model uses 24 km/h for buses, 80 km/h for trains and 48 travel weeks. A five-day commute of 20 minutes each way is 200 minutes/week. The speeds are illustrative averages and can differ by route. Electricity factors represent grid generation and omit a separate charge for network losses. Car manufacture varies with vehicle size, battery and life. [DESNZ 2026 flat file](https://assets.publishing.service.gov.uk/media/6a6c9748862aaf18d9c62ac9/ghg-conversion-factors-2026-flat-format-revised.xlsx) · [ICCT passenger-car life-cycle analysis](https://theicct.org/publication/electric-cars-life-cycle-analysis-emissions-europe-jul25/)
+
+Example at five days per week: a 32 km round trip by solo petrol/diesel car is 7,680 km/year, about 1.62 t CO₂e for driving and fuel supply plus 0.31 t for car manufacture. An hour each way by train represents 160 km/day at 80 km/h, or 38,400 passenger-km/year, for about 1.53 t including energy supply. At the same 32 km round-trip distance, national rail would be about 0.31 t/year. The national rail factor does not include train manufacture or rail infrastructure, so compare it to the 1.62 t car-use figure for similar accounting boundaries.
 
 ## Home energy
 
@@ -163,13 +173,13 @@ At 3 million tokens/week, the typical electricity rate, baseline hardware rate a
 
 Each reference runs the same activity model with the explicit inputs in [model.js](model.js). Every category and subcategory is calculated from those inputs. These profiles are illustrations, with several inputs anchored to statistics and others chosen to show plausible activity differences. They are not observed national footprints or representative surveys. High-income countries are the proxy for developed economies.
 
-| Reference | Meat g/week | Vehicle km per person after sharing | Household appliance electricity kWh/yr | Model result, t CO₂e/person/yr |
+| Reference | Meat and fish portions/week | Vehicle km per person after sharing | Household appliance electricity kWh/yr | Model result, t CO₂e/person/yr |
 | --- | ---: | ---: | ---: | ---: |
-| UK | 1,050 | 5,800 | 2,700 | 9.1 |
-| US | 1,550 | 12,770 | 9,500 | 14.8 |
-| China | 925 | 2,470 | 3,200 | 6.3 |
-| High income | 1,200 | 7,400 | 5,100 | 10.6 |
-| World | 565 | 2,180 | 2,800 | 4.6 |
+| UK | 7 | 5,800 | 2,700 | 9.0 |
+| US | 10.3 | 12,770 | 9,500 | 14.6 |
+| China | 6.2 | 2,470 | 3,200 | 6.2 |
+| High income | 8 | 7,400 | 5,100 | 10.5 |
+| World | 3.8 | 2,180 | 2,800 | 4.7 |
 
 For diet, the UK, China and world examples use about 65% of FAOSTAT meat supply by weight (84.44, 74.03 and 45.12 kg/person/year) as a rough portion-weight proxy. The 65% is an assumption to allow for non-edible material, preparation and waste, which vary by food and location. US and high-income amounts and beef shares are illustrative. GB's roughly 412 billion car-kilometres in 2024 and FHWA's US light-duty travel figures anchor the order of magnitude of the road scenarios. US electricity uses the EIA anchor described under Home. Remaining distances, travel mix, climate endpoints, household size, non-US/UK electricity, budgets and AI use are illustrative. For example, the China case uses a flat and a China grid, with more bus and rail travel and less driving than the US case. Model totals omit activity outside the inputs and can differ from official consumption or territorial inventories. [FAOSTAT food balances](https://www.fao.org/faostat/en/#data/FBS) · [FAOSTAT meat supply data view](https://ourworldindata.org/grapher/meat-supply-per-person?tab=table) · [GB road traffic](https://www.gov.uk/government/statistics/road-traffic-estimates-in-great-britain-2024) · [US FHWA travel](https://www.fhwa.dot.gov/policyinformation/statistics/2023/vm1.cfm) · [Defra UK consumption footprint](https://www.gov.uk/government/statistics/uks-carbon-footprint/carbon-footprint-for-the-uk-and-england-to-2023)
 
