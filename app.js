@@ -80,7 +80,8 @@ const sections = [
       { key: "homeType", label: "Type of home", choices: [
         ["Flat", "flat"], ["Terrace", "terrace"], ["Semi-detached", "semi"], ["Detached", "detached"],
       ] },
-      { key: "people", label: "People sharing the home", unit: "people", min: 1, max: 20, integer: true },
+      { key: "people", label: "People sharing the home", unit: "people", min: 1, max: 8, integer: true },
+      { key: "newBuild", label: "New-build home", choices: [["No", false], ["Yes", true]], help: "Adds construction emissions over 50 years, shared between occupants. This may overlap with shared capital investment." },
       { key: "climate", label: "Outdoor climate", choices: [
         ["UK-like", { winter: 4, summer: 15.3 }], ["Cold winter", { winter: -5, summer: 21 }],
         ["Warm year-round", { winter: 16, summer: 27 }],
@@ -431,10 +432,7 @@ function updateEditor(emissions, editing) {
     for (const choice of buttons) {
       choice.button.setAttribute("aria-pressed", choice === selected);
     }
-    if (input && input !== editing) {
-      if (field.checkbox) input.checked = profile[key];
-      else input.value = profile[key];
-    }
+    if (input && input !== editing) input.value = profile[key];
     if (slider) {
       const value = profile[key];
       if (field.slider === "log") {
