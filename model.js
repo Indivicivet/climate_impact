@@ -14,14 +14,14 @@ const categories = [
   { label: "Home energy", short: "Home", colour: "#c25c08", parts: [
     ["Appliances & lights", "#bd530b", "electricity"],
     ["Space heating", "#e5821a", "spaceHeating"], ["Hot water", "#f5b657", "hotWater"],
-    ["Air conditioning", "#ffd18d", "coolTo"],
+    ["Air conditioning", "#ffd18d", "coolTo"], ["New-build construction", "#a13b00", "newBuild"],
   ] },
   { label: "Goods & services", short: "Goods", colour: "#c13b62", parts: [
     ["Shopping", "#962448", "shopping"], ["Devices & telecom", "#d04d78", "devicesAndTelecom"],
     ["Leisure", "#efb5c9", "leisure"],
   ] },
   { label: "Shared services", short: "Shared", colour: "#56617c", parts: [
-    ["Public services", "#56617c", "publicServices"], ["Buildings & capital investment", "#94a0b9", "capital"],
+    ["Central government", "#56617c", "centralGovernment"], ["Local government", "#7484a2", "localGovernment"], ["Buildings & capital investment", "#94a0b9", "capital"],
   ] },
   { label: "AI use", short: "AI", colour: "#00857e", parts: [
     ["Data-centre electricity", "#007a72", "aiEnergy"], ["Server manufacture", "#4bbdb0", "aiHardware"],
@@ -29,6 +29,7 @@ const categories = [
 ];
 
 const grids = { uk: 0.131, us: 0.384, china: 0.525, eu: 0.210, world: 0.458 };
+const homeArea = { flat: 60, terrace: 85, semi: 95, detached: 140 };
 const heatLoss = { flat: 80, terrace: 160, semi: 180, detached: 235 };
 const hotelFactors = {
   uk: { typical: 10.4, limited: 7.79, full: 14.08 },
@@ -39,6 +40,8 @@ const travelWeeks = 48;
 const busKmPerHour = 24;
 const trainKmPerHour = 80;
 const devicesAndTelecomKg = 50 / 2 + 180 / 5 + 12 * 25 * 0.1;
+const beefFactors = { ukDairy: 26, ukMixed: 37, worldMixed: 66 };
+const otherMeatFactor = 11;
 
 const dietPresets = [
   { meatServings: 0, dairyServings: 0 },
@@ -78,11 +81,11 @@ const sharedFootprints = {
 };
 
 const initial = {
-  ...dietPresets[3], calories: 2000, beef: 20, conscientiousBeef: false,
+  ...dietPresets[3], calories: 2000, beef: 20, beefType: "ukMixed",
   ...travelPresets[0], shortKm: 1500, longKm: 6500, hotelRegion: "uk", hotelType: "typical",
   car: "petrol", carDays: 3, commuteKm: 32, otherKm: 2900,
   busMinutes: 0, trainMinutes: 0,
-  ...homePresets[1], ...purchasePresets[1], sharedRegion: "uk",
+  ...homePresets[1], newBuild: false, ...purchasePresets[1], sharedRegion: "uk",
   weeklyMTokens: 0, aiEnergy: 0.4, aiGrid: grids.world, aiHardware: 0.02,
   donation: 0, price: 200,
 };
@@ -95,6 +98,7 @@ const benchmarks = [
     homeType: "semi", people: 2.4, weeklyMTokens: 0.02,
   } },
   { id: "us", name: "United States", button: "🇺🇸 US", activities: {
+    beefType: "worldMixed",
     meatServings: 10.3, beef: 27, dairyServings: 19.3, shortTrips: 1.6, longTrips: 0.35, shortKm: 1600,
     carDays: 0, otherKm: 12770, busMinutes: 16, trainMinutes: 9,
     homeType: "detached", electricity: 9500, grid: grids.us, winter: 0, summer: 25,
@@ -102,6 +106,7 @@ const benchmarks = [
     leisure: 65, weeklyMTokens: 0.04,
   } },
   { id: "china", name: "China", button: "🇨🇳 China", activities: {
+    beefType: "worldMixed",
     meatServings: 6.2, beef: 10, dairyServings: 4.3, shortTrips: 0.45, longTrips: 0.08, shortKm: 1300,
     carDays: 0, otherKm: 2470, busMinutes: 100, trainMinutes: 51.75,
     homeType: "flat", electricity: 3200, grid: grids.china, winter: 1, summer: 26,
@@ -109,6 +114,7 @@ const benchmarks = [
     leisure: 15, weeklyMTokens: 0.02,
   } },
   { id: "high-income", name: "High-income countries", button: "Developed world", activities: {
+    beefType: "worldMixed",
     meatServings: 8, beef: 21, dairyServings: 16, shortTrips: 1.1, longTrips: 0.28,
     carDays: 0, otherKm: 7400, busMinutes: 40, trainMinutes: 25.2,
     homeType: "semi", electricity: 5100, grid: 0.35, winter: 3, summer: 22, people: 2.5,
@@ -116,6 +122,7 @@ const benchmarks = [
     weeklyMTokens: 0.03,
   } },
   { id: "world", name: "World average", button: "🌐 World", activities: {
+    beefType: "worldMixed",
     meatServings: 3.8, beef: 17, dairyServings: 8, shortTrips: 0.27, longTrips: 0.08,
     carDays: 0, otherKm: 2180, busMinutes: 80, trainMinutes: 18.75,
     homeType: "terrace", electricity: 2800, grid: grids.world, winter: 10, summer: 26,
@@ -170,8 +177,8 @@ function calculate(profile) {
 
   const [publicServices, capital] = sharedFootprints[profile.sharedRegion];
   const kg = {
-    beef: annualMeatKg * beefShare * (profile.conscientiousBeef ? 35 : 60),
-    otherMeat: annualMeatKg * (1 - beefShare) * 10,
+    beef: annualMeatKg * beefShare * beefFactors[profile.beefType],
+    otherMeat: annualMeatKg * (1 - beefShare) * otherMeatFactor,
     dairy: profile.dairyServings * 0.6 * 365 / 7 * portionScale,
     otherFood: otherCalories * 2.47 / 2000 * 365,
     shortTrips: 2 * profile.shortTrips * profile.shortKm * (0.12576 + 0.02249),
@@ -185,10 +192,12 @@ function calculate(profile) {
     spaceHeating: heatKWh * heatFactor / profile.people,
     hotWater: 600 * heatFactor,
     coolTo: coolingKWh * profile.grid / profile.people,
+    newBuild: profile.newBuild ? homeArea[profile.homeType] * 500 / 50 / profile.people : 0,
     shopping: 12 * profile.shopping * 0.5,
     devicesAndTelecom: devicesAndTelecomKg,
     leisure: 12 * profile.leisure * 0.25,
-    publicServices,
+    centralGovernment: publicServices * 53.028 / (53.028 + 26.235),
+    localGovernment: publicServices * 26.235 / (53.028 + 26.235),
     capital,
     aiEnergy: annualMTokens * profile.aiEnergy * profile.aiGrid,
     aiHardware: annualMTokens * profile.aiHardware,

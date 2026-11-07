@@ -14,8 +14,10 @@ const sections = [
         impact: ["beef", "otherMeat"], help: "One portion is about a palm-sized serving (150 g)." },
       { key: "beef", label: "Beef as a share of meat", unit: "%", max: 100, integer: true,
         choices: [["0%", 0], ["10%", 10], ["20%", 20], ["50%", 50]] },
-      { key: "conscientiousBeef", label: "Conscientious beef only", checkbox: true,
-        help: "Uses an illustrative 35 kg CO₂e/kg for lower-impact beef." },
+      { key: "beefType", label: "Beef type", choices: [
+        ["Conscientious (UK Dairy)", "ukDairy"], ["Mixed (UK)", "ukMixed"],
+        ["Mixed (World)", "worldMixed"],
+      ], help: "Illustrative averages; actual impacts vary by farm and supply chain." },
       { key: "dairyServings", label: "Dairy and eggs", unit: "portions/wk", max: 80, sliderMax: 28, step: 0.5,
         impact: ["dairy"], help: "One portion: a glass of milk, a pot of yogurt, a piece of cheese or two eggs." },
     ],
@@ -119,7 +121,7 @@ const sections = [
   {
     title: "Shared services", category: 5, quick: ["sharedRegion"],
     common: [
-      { key: "sharedRegion", label: "Where you live", impact: ["publicServices", "capital"],
+      { key: "sharedRegion", label: "Where you live", impact: ["centralGovernment", "localGovernment", "capital"],
         choices: benchmarks.map(({ button, id }) => [button, id]) },
     ],
   },
@@ -156,7 +158,7 @@ const sections = [
 
 const byId = id => document.getElementById(id);
 const sum = values => values.reduce((total, value) => total + value, 0);
-const storageVersion = 6;
+const storageVersion = 7;
 const storageKey = "climate-impact.profiles.v" + storageVersion;
 const fields = sections.flatMap(section => [...section.common, ...(section.detail ?? [])]);
 const modelFields = fields.filter(field => Object.hasOwn(initial, field.key));
@@ -192,7 +194,6 @@ function tonnes(value) {
 }
 
 function coerce(field, value) {
-  if (field.checkbox) return typeof value === "boolean" ? value : initial[field.key];
   if (!field.unit) {
     return field.choices.some(([, choice]) => value === choice) ? value : initial[field.key];
   }
@@ -246,6 +247,7 @@ function readProfiles() {
         const oldOtherKm = Number.isFinite(values.otherKm) ? values.otherKm : 4000;
         values.otherKm = Math.round(oldOtherKm / occupancy * 100) / 100;
       }
+      if (version < 7 && values.conscientiousBeef === true) values.beefType = "ukDairy";
       return {
         id: item.id, name: item.name.slice(0, 50),
         values: Object.fromEntries(modelFields.map(field => [
@@ -291,19 +293,6 @@ function buildComparisonOptions() {
 
 function buildField(field, quick = false) {
   const group = create("fieldset", quick ? "field quick-field" : "field");
-  if (field.checkbox) {
-    const label = create("label", "checkbox-label");
-    const input = create("input");
-    input.type = "checkbox";
-    input.addEventListener("change", () => {
-      profile[field.key] = input.checked;
-      render();
-    });
-    label.append(input, document.createTextNode(field.label));
-    group.append(label, create("p", "help", field.help));
-    controls.set(field.key, { field, group, buttons: [], input, contribution: create("span") });
-    return group;
-  }
   if (quick && field.quickSlider) group.classList.add("quick-slider");
   group.append(create("legend", "sr-only", field.label));
   const heading = create("div", "field-heading");
@@ -442,8 +431,10 @@ function updateEditor(emissions, editing) {
     for (const choice of buttons) {
       choice.button.setAttribute("aria-pressed", choice === selected);
     }
-    if (field.checkbox) input.checked = profile[key];
-    else if (input && input !== editing) input.value = profile[key];
+    if (input && input !== editing) {
+      if (field.checkbox) input.checked = profile[key];
+      else input.value = profile[key];
+    }
     if (slider) {
       const value = profile[key];
       if (field.slider === "log") {
@@ -462,7 +453,7 @@ function updateEditor(emissions, editing) {
     }
     group.disabled =
       (key === "beef" && profile.meatServings === 0) ||
-      (key === "conscientiousBeef" && (profile.meatServings === 0 || profile.beef === 0)) ||
+      (key === "beefType" && (profile.meatServings === 0 || profile.beef === 0)) ||
       (["carDays", "commuteKm", "otherKm"].includes(key) && profile.car === "none") ||
       (key === "indoor" && profile.heat === "none");
   }

@@ -8,20 +8,45 @@ Enter approximate total intake, including food eaten away from home. The model t
 
 | Food | Energy assumption | Emissions assumption |
 | --- | ---: | --- |
-| Beef | 300 kcal per 150 g portion | 60 kg CO₂e/kg by default: an illustrative blend of beef-herd and dairy-herd beef, whose global means are about 99 and 33. The conscientious beef option uses an illustrative 35 kg CO₂e/kg for lower-impact beef; actual impacts vary by farm and supply chain. |
-| Other meat and fish | 300 kcal per 150 g portion | 10 kg CO₂e/kg, near poultry at 9.9. Pork is about 12.3; lamb and seafood vary widely. |
+| Beef | 300 kcal per 150 g portion | 26, 37 or 66 kg CO₂e/kg, according to the selected beef type; see below. |
+| Other meat and fish | 300 kcal per 150 g portion | 11 kg CO₂e/kg, an illustrative mostly chicken-and-pork mix; lamb and seafood vary widely. |
 | Dairy and eggs | 120 kcal per portion | 0.6 kg CO₂e/portion. A rounded blend of milk (200 mL), yogurt (125 g, using milk as a proxy), cheese (30 g) and eggs (two). |
 | Other food and drink | Remaining daily kcal | 2.47 kg CO₂e per 2,000 kcal, the median modelled footprint of vegan diets in the UK EPIC-Oxford cohort at equal energy intake. We use it as a proxy for the remaining calories in all diets. |
 
 The portion energies are rounded examples informed by UK food composition data. Multiply weekly portions by 365 ÷ 7, then by the portion emissions. Apply the beef percentage by weight within meat and fish. Multiply remaining daily calories by 365 × 2.47 ÷ 2,000. The vegan result uses the study's estimate directly; the other presets are illustrative mixes using this calculator's factors, not the study's observed diet groups. Equal calorie intakes can have very different footprints. [Scarborough et al. (2023), Table 3](https://doi.org/10.1038/s43016-023-00795-w) · [UK food composition data](https://www.gov.uk/government/publications/composition-of-foods-integrated-dataset-cofid) · [Poore & Nemecek (2018)](https://doi.org/10.1126/science.aaq0216) · [Food factors by kilogram](https://ourworldindata.org/grapher/ghg-per-kg-poore)
 
+### Meat source values and calculator factors
+
+Source estimates below are kg CO₂e per kg of meat. The UK and global beef and lamb values cover production to retail and come from the same analysis, using data from 2000–2016; the UK sample is limited. The UK chicken and pork values are separate farm-gate estimates **per kg carcass**, so they are not directly comparable to the retail figures or to boneless meat purchased. They are included as context, not used in the blend. All figures vary by production system and study method.
+
+| Meat | UK source estimate | Worldwide source estimate |
+| --- | ---: | ---: |
+| Beef, dairy herd | 25.9 retail | 33.3 retail |
+| Beef, suckler / beef herd | 48.4 retail | 99.5 retail |
+| Lamb and mutton | 37.4 retail | 39.7 retail |
+| Chicken / poultry | 3.81 carcass, farm gate | 9.9 retail |
+| Pork | 4.96 carcass, farm gate | 12.3 retail |
+
+The UK chicken figure is a review's average of studies; the UK pork figure is an Agrecalc farm average from 2018–2022. [UK beef and lamb roadmap, table 1](https://projectblue.blob.core.windows.net/media/Default/Environment/Beef_and_Lamb_Environmental_Roadmap_Feb%202025.pdf) · [UK chicken review, table 10](https://www.quorn.co.uk/assets/files/content/Carbon-Trust-Comparison-Report-2022.pdf) · [UK pork farm data](https://ahdb.org.uk/knowledge-library/carbon-footprints-food-and-farming) · [Global food factors](https://ourworldindata.org/grapher/ghg-per-kg-poore)
+
+| Calculator choice | kg CO₂e/kg | Assumption |
+| --- | ---: | --- |
+| Conscientious (UK Dairy) | 26 | UK dairy-herd estimate, rounded from 25.9. Dairy emissions are shared between milk and beef. |
+| Mixed (UK), default | 37 | Illustrative 50:50 blend by weight of UK dairy-herd and suckler estimates: (25.9 + 48.4) ÷ 2 = 37.15. |
+| Mixed (World) | 66 | Illustrative 50:50 blend by weight of worldwide dairy- and beef-herd estimates: (33.3 + 99.5) ÷ 2 = 66.4. |
+| Other meat and fish | 11 | Illustrative 50:50 blend of global poultry (9.9) and pork (12.3) retail estimates: 11.1, rounded. These global values are proxies for a UK diet mostly comprising chicken and pork, not a measured UK consumption mix. |
+
+The 50:50 mixes are assumptions, not measured production or consumption shares. Other meat includes fish and lamb but the factor does not separately account for their share; it will tend to underestimate lamb-heavy diets. The UK dairy option is an average, not a guarantee for a particular product. UK farm-gate sheep meat is 29.5 kg CO₂e/kg carcass, compared with 22.1 for dairy beef and 32.4 for suckler beef in the same Agrecalc data. A study of beef on newly deforested Amazon land estimated over 700 kg CO₂e/kg carcass, spreading clearing emissions over 20 years; this is an extreme case, not a Brazilian average. [Amazon study](https://portal.research.lu.se/en/publications/including-carbon-emissions-from-deforestation-in-the-carbon-footp/)
+
+Other figures discussed for context: a Canadian assessment estimated 32.8 kg CO₂e/kg consumed boneless beef from specialised herds. A World Bank chart reports global dairy beef at 35.3; the global dataset linked above reports 33.3, which is used consistently for the blend here. These are not interchangeable farm-specific measurements. [Canadian study](https://doi.org/10.1139/CJAS-2023-0077) · [World Bank chart](https://documents1.worldbank.org/curated/en/099032425143541830/pdf/P180735-9d577df3-a7cb-4c45-a53c-4ce33dcfd0e1.pdf)
+
 | Preset | Meat and fish portions/week | Dairy and egg portions/week | Estimate at 2,000 kcal/day and 20% beef, t CO₂e/yr |
 | --- | ---: | ---: | ---: |
 | Vegan | 0 | 0 | 0.90 |
 | Veggie | 0 | 12 | 1.18 |
-| Low meat | 2 | 7 | 1.34 |
-| Med meat | 4 | 12 | 1.73 |
-| High meat | 8 | 20 | 2.47 |
+| Low meat | 2 | 7 | 1.28 |
+| Med meat | 4 | 12 | 1.61 |
+| High meat | 8 | 20 | 2.23 |
 
 ## Travel
 
@@ -64,6 +89,10 @@ Enter total weekly minutes for bus and rail. The model uses 24 km/h for buses, 8
 Example at five days per week: a 32 km round trip by solo petrol/diesel car is 7,680 km/year, about 1.62 t CO₂e for driving and fuel supply plus 0.31 t for car manufacture. An hour each way by train represents 160 km/day at 80 km/h, or 38,400 passenger-km/year, for about 1.53 t including energy supply. At the same 32 km round-trip distance, national rail would be about 0.31 t/year. The national rail factor does not include train manufacture or rail infrastructure, so compare it to the 1.62 t car-use figure for similar accounting boundaries.
 
 ## Home energy
+
+**New-build construction.** If selected, estimate upfront construction emissions at 500 kg CO₂e/m², multiplied by an assumed floor area of 60 m² for a flat, 85 m² for a terrace, 95 m² for a semi-detached house, or 140 m² for a detached house. These areas are illustrative assumptions, not measurements of typical homes. Divide the result by 50 years and by the number of occupants. The 500 kg/m² factor is based on a UK house estimate and is a rough proxy for flats and other regions. For example, an 85 m² house gives 42.5 tonnes upfront, or 425 kg per person per year for two occupants over 50 years. Construction emissions occur upfront; spreading them is an accounting choice, not a prediction of annual emissions. [Canterbury construction evidence](https://www.canterbury.gov.uk/sites/default/files/2024-04/Development%20options%20carbon%20emissions.pdf)
+
+This estimate is added to the existing shared capital allocation, which includes dwelling construction; there is potential double counting. The available aggregate does not identify an appropriate amount to subtract.
 
 **Space heating.** Enter your thermostat setting and the mean outdoor temperatures in your coldest and warmest months. The model interpolates between those endpoints with a cosine over a year. Each day contributes the positive difference between outdoor temperature and the heating balance temperature, in the direction that calls for heat:
 
@@ -123,6 +152,8 @@ The preset label totals editable monthly spend. The leisure factor is a spend-ba
 
 ## Shared services
 
+Many factors in this calculator are based on UK data, including home construction, heating assumptions, spending factors and shared resources. Applying them elsewhere is an approximation and can miss differences in building practices, energy systems, consumption and public services.
+
 Choosing a region allocates a share of public services (such as schools, hospitals and local government) and capital investment (such as construction and equipment). It does not ask you to estimate emissions or assess how often you use public services.
 
 The UK factors divide Defra's 2023 central and local government consumption footprints (53.028 + 26.235 Mt CO₂e) and gross fixed capital formation (84.258 Mt) by the ONS mid-2023 population rounded to 68.3 million. For other regions, scale each UK component by the corresponding per-person PPP spending ratio. Per-person spending is PPP GDP per person × the share of GDP spent on general government consumption or gross fixed capital formation. Apply the same UK emissions per PPP spending to each region as a proxy. This misses differences in construction materials, energy and public service systems. The capital share covers the whole economy and can overlap with capital embodied in some household factors.
@@ -134,6 +165,10 @@ The UK factors divide Defra's 2023 central and local government consumption foot
 | China | 25,200 | 17.19% | 40.45% | 401 + 1,095 |
 | High income | 64,881 | 17.30% | 22.54% | 1,039 + 1,570 |
 | World | 23,382 | 16.64% | 25.98% | 360 + 652 |
+
+The model splits government consumption into central and local using the UK ratio for every region; the regional splits are therefore proxies, not observed local shares. The UK totals correspond to approximately 776 kg central and 384 kg local per person per year (rounding the combined total produces 1,161 kg).
+
+Individual choices can affect activities within these broad accounts, but the published totals do not identify an individual waste contribution. England generated 376 kg of household waste per person in 2024; a study estimated 17 kg CO₂e per 100 kg of food waste for one kerbside pathway. This is not a typical individual saving, and landfill or other treatment can differ. Water supply and wastewater treatment at an illustrative combined 0.36 kg CO₂e/m³ imply about 13 kg CO₂e/year for 100 litres/day, excluding water heating; their allocation to government consumption is not established. [Defra household waste](https://www.gov.uk/government/statistics/local-authority-collected-waste-management-annual-results/local-authority-collected-waste-management-annual-results-202425) · [Food waste study](https://link.springer.com/article/10.1007/s11367-026-02666-5) · [Water factors](https://cultureforclimate.scot/services/environmental-reporting/guidance-for-reporting-organisations/emission-factors/)
 
 The table rounds displayed inputs. Calculations use the 2023 World Bank values before rounding. [Defra final demand, Table 1](https://www.gov.uk/government/statistics/uks-carbon-footprint/carbon-footprint-for-the-uk-and-england-to-2023) · [ONS population](https://www.ons.gov.uk/peoplepopulationandcommunity/populationandmigration/populationestimates/bulletins/annualmidyearpopulationestimates/mid2023) · [World Bank PPP GDP per capita](https://data.worldbank.org/indicator/NY.GDP.PCAP.PP.CD) · [Government consumption](https://data.worldbank.org/indicator/NE.CON.GOVT.ZS) · [Gross fixed capital formation](https://data.worldbank.org/indicator/NE.GDI.FTOT.ZS)
 
@@ -171,14 +206,14 @@ At 3 million tokens/week, the typical electricity rate, baseline hardware rate a
 
 ## Country comparisons
 
-Each reference runs the same activity model with the explicit inputs in [model.js](model.js). Every category and subcategory is calculated from those inputs. These profiles are illustrations, with several inputs anchored to statistics and others chosen to show plausible activity differences. They are not observed national footprints or representative surveys. High-income countries are the proxy for developed economies.
+Each reference runs the same activity model with the explicit inputs in [model.js](model.js). Every category and subcategory is calculated from those inputs. These profiles are illustrations, with several inputs anchored to statistics and others chosen to show plausible activity differences. They are not observed national footprints or representative surveys. High-income countries are the proxy for developed economies. The UK reference uses the mixed UK beef factor; the other references use the mixed world factor.
 
 | Reference | Meat and fish portions/week | Vehicle km per person after sharing | Household appliance electricity kWh/yr | Model result, t CO₂e/person/yr |
 | --- | ---: | ---: | ---: | ---: |
-| UK | 7 | 5,800 | 2,700 | 9.0 |
-| US | 10.3 | 12,770 | 9,500 | 14.6 |
-| China | 6.2 | 2,470 | 3,200 | 6.2 |
-| High income | 8 | 7,400 | 5,100 | 10.5 |
+| UK | 7 | 5,800 | 2,700 | 8.8 |
+| US | 10.3 | 12,770 | 9,500 | 14.8 |
+| China | 6.2 | 2,470 | 3,200 | 6.3 |
+| High income | 8 | 7,400 | 5,100 | 10.6 |
 | World | 3.8 | 2,180 | 2,800 | 4.7 |
 
 For diet, the UK, China and world examples use about 65% of FAOSTAT meat supply by weight (84.44, 74.03 and 45.12 kg/person/year) as a rough portion-weight proxy. The 65% is an assumption to allow for non-edible material, preparation and waste, which vary by food and location. US and high-income amounts and beef shares are illustrative. GB's roughly 412 billion car-kilometres in 2024 and FHWA's US light-duty travel figures anchor the order of magnitude of the road scenarios. US electricity uses the EIA anchor described under Home. Remaining distances, travel mix, climate endpoints, household size, non-US/UK electricity, budgets and AI use are illustrative. For example, the China case uses a flat and a China grid, with more bus and rail travel and less driving than the US case. Model totals omit activity outside the inputs and can differ from official consumption or territorial inventories. [FAOSTAT food balances](https://www.fao.org/faostat/en/#data/FBS) · [FAOSTAT meat supply data view](https://ourworldindata.org/grapher/meat-supply-per-person?tab=table) · [GB road traffic](https://www.gov.uk/government/statistics/road-traffic-estimates-in-great-britain-2024) · [US FHWA travel](https://www.fhwa.dot.gov/policyinformation/statistics/2023/vm1.cfm) · [Defra UK consumption footprint](https://www.gov.uk/government/statistics/uks-carbon-footprint/carbon-footprint-for-the-uk-and-england-to-2023)

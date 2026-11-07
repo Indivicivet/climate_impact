@@ -216,7 +216,6 @@ p { margin: 0; color: var(--muted); }
 .field-heading { font-size: 0.86rem; }
 .field-heading:empty { display: none; }
 .field-label { font-weight: 650; }
-.checkbox-label { display: flex; align-items: center; gap: 8px; font-size: 0.86rem; font-weight: 650; }
 .field-impact { margin-left: auto; color: var(--muted); font-size: 0.78rem; white-space: nowrap; font-variant-numeric: tabular-nums; }
 .field-adjustments { margin-top: 3px; }
 .field-adjustments:empty { display: none; }
