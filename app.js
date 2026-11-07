@@ -554,6 +554,46 @@ function drawPie(container, name, groups, total, reduction = 0) {
   if (total) {
     addRing(groups, 78, 110);
     addRing(groups.flatMap(group => group.parts.map(part => ({ ...part, parent: group }))), 111, 148);
+
+    let start = 0;
+    const labels = [[], []];
+    for (const group of groups) {
+      if (group.amount <= 0) continue;
+      const angle = start + Math.PI * group.amount / total;
+      const x = 150 + 94 * Math.sin(angle);
+      const y = 150 - 94 * Math.cos(angle);
+      labels[x < 150 ? 0 : 1].push({ group, x, y });
+      start += turn * group.amount / total;
+    }
+    for (const [side, items] of labels.entries()) {
+      items.sort((a, b) => a.y - b.y);
+      const positions = items.map((item, i) => Math.max(item.y, 20 + i * 25));
+      for (let i = positions.length - 1; i >= 0; i--) {
+        positions[i] = Math.min(positions[i], 280 - (positions.length - 1 - i) * 25);
+      }
+      items.forEach((item, i) => {
+        const x = side ? 252 : 48;
+        const line = document.createElementNS(svgNamespace, "line");
+        line.setAttribute("x1", item.x);
+        line.setAttribute("y1", item.y);
+        line.setAttribute("x2", side ? x - 22 : x + 22);
+        line.setAttribute("y2", positions[i]);
+        line.setAttribute("class", "pie-label-line");
+        const label = document.createElementNS(svgNamespace, "text");
+        label.setAttribute("x", x);
+        label.setAttribute("y", positions[i] - 2);
+        label.setAttribute("class", "pie-label");
+        const name = document.createElementNS(svgNamespace, "tspan");
+        name.setAttribute("x", x);
+        name.textContent = item.group.short ?? item.group.label;
+        const value = document.createElementNS(svgNamespace, "tspan");
+        value.setAttribute("x", x);
+        value.setAttribute("dy", "10");
+        value.textContent = chartTotal(item.group.amount);
+        label.append(name, value);
+        graphic.append(line, label);
+      });
+    }
   }
 
   const centre = create("span", "pie-centre");
@@ -563,16 +603,7 @@ function drawPie(container, name, groups, total, reduction = 0) {
     centre.append(create("span", "pie-gross", "Gross " + tonnes(total) + " t"));
   }
   pie.append(graphic, centre);
-  const totals = create("ul", "pie-totals");
-  totals.setAttribute("aria-label", name + " category totals per year. Tonnes unless labelled kg.");
-  for (const group of groups) {
-    const item = create("li", "pie-total");
-    item.style.setProperty("--category", group.colour);
-    item.append(create("span", "", group.short ?? group.label),
-      create("strong", "", chartTotal(group.amount)));
-    totals.append(item);
-  }
-  container.replaceChildren(pie, totals);
+  container.replaceChildren(pie);
 }
 
 function emissionsGroups(values) {

@@ -80,7 +80,7 @@ p { margin: 0; color: var(--muted); }
 }
 #your-pie, #reference-pie { width: 100%; min-width: 0; }
 .pie {
-  width: min(100%, 310px);
+  width: min(100%, 400px);
   margin-inline: auto;
   aspect-ratio: 1;
   display: grid;
@@ -109,20 +109,19 @@ p { margin: 0; color: var(--muted); }
 }
 .pie-centre > span { line-height: 1.15; }
 .pie-gross { margin-top: 3px; font-size: 0.76em; }
-.pie-totals {
-  display: grid;
-  grid-template-columns: repeat(2, minmax(0, 1fr));
-  gap: 2px 8px;
-  margin: 5px 0 0;
-  padding: 0;
-  list-style: none;
-  text-align: left;
-  font-size: 0.75rem;
+.pie-label-line { stroke: #17241d; stroke-width: 0.8; pointer-events: none; }
+.pie-label {
+  fill: #17241d;
+  stroke: #fff;
+  stroke-width: 3px;
+  paint-order: stroke;
+  stroke-linejoin: round;
+  text-anchor: middle;
+  font-size: 9px;
+  font-weight: 700;
   font-variant-numeric: tabular-nums;
+  pointer-events: none;
 }
-.pie-total { display: flex; align-items: baseline; gap: 4px; min-width: 0; }
-.pie-total::before { content: ""; align-self: center; width: 6px; height: 6px; background: var(--category); border-radius: 1px; flex: none; }
-.pie-total strong { margin-left: auto; white-space: nowrap; }
 .reference-info { display: flex; flex-wrap: wrap; justify-content: center; gap: 2px 8px; font-size: 0.82rem; color: var(--muted); }
 .profile-actions { display: flex; gap: 5px; justify-content: center; }
 
@@ -268,15 +267,13 @@ p { margin: 0; color: var(--muted); }
     overflow-y: auto;
   }
 
-  .pie { width: min(100%, clamp(90px, calc(100dvh - var(--bar-height) - var(--chart-reserve)), 310px)); }
+  .pie { width: min(100%, clamp(90px, calc(100dvh - var(--bar-height) - var(--chart-reserve)), 400px)); }
   .pie-centre strong { font-size: clamp(1rem, 3.4dvh, 2.5rem); }
   .bar-plot { height: var(--bar-height); }
 }
 
 @media (min-width: 1150px), (650px <= width <= 900px) {
   .analysis { --chart-reserve: 322px; }
-  #your-pie, #reference-pie { display: grid; grid-template-columns: minmax(0, 1fr) minmax(76px, 0.46fr); align-items: center; gap: 8px; }
-  .pie-totals { grid-template-columns: minmax(0, 1fr); margin-top: 0; }
 }
 
 @media (max-width: 900px) {
@@ -290,7 +287,6 @@ p { margin: 0; color: var(--muted); }
   .metrics { gap: 3px 9px; padding: 6px 8px; font-size: 0.78rem; }
   .comparison-options button, .profile-actions button { font-size: 0.78rem; padding-inline: 5px; }
   .reference-info { font-size: 0.75rem; }
-  .pie-totals { gap: 1px 5px; font-size: 0.69rem; }
   .bar-chart { --axis: 28px; }
   .bar-plot { height: 170px; }
   .bar-totals { display: grid; gap: 1px; }
