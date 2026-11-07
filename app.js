@@ -10,15 +10,15 @@ const sections = [
         min: 1000, max: 4000, step: 100, quickSlider: true },
     ],
     detail: [
-      { key: "meatServings", label: "Meat and fish", unit: "portions/wk", max: 35, sliderMax: 28, integer: true,
-        impact: ["beef", "otherMeat"], help: "One portion is about a palm-sized serving (150 g)." },
+      { key: "meatCalories", label: "Calories from meat and fish", unit: "%", max: 100, step: 0.1,
+        impact: ["beef", "otherMeat"], help: "One portion is about 150 g." },
       { key: "beef", label: "Beef as a share of meat", unit: "%", max: 100, integer: true,
         choices: [["0%", 0], ["10%", 10], ["20%", 20], ["50%", 50]] },
       { key: "beefType", label: "Beef type", choices: [
         ["Conscientious (UK Dairy)", "ukDairy"], ["Mixed (UK)", "ukMixed"],
         ["Mixed (World)", "worldMixed"],
       ], help: "Illustrative averages; actual impacts vary by farm and supply chain." },
-      { key: "dairyServings", label: "Dairy and eggs", unit: "portions/wk", max: 80, sliderMax: 28, integer: true,
+      { key: "dairyCalories", label: "Calories from dairy and eggs", unit: "%", max: 100, step: 0.1,
         impact: ["dairy"], help: "One portion: a glass of milk, a pot of yogurt, a piece of cheese or two eggs." },
     ],
     note: "The remaining calories are estimated as plant-based food and drink.",
@@ -159,7 +159,7 @@ const sections = [
 
 const byId = id => document.getElementById(id);
 const sum = values => values.reduce((total, value) => total + value, 0);
-const storageVersion = 7;
+const storageVersion = 8;
 const storageKey = "climate-impact.profiles.v" + storageVersion;
 const fields = sections.flatMap(section => [...section.common, ...(section.detail ?? [])]);
 const modelFields = fields.filter(field => Object.hasOwn(initial, field.key));
@@ -249,6 +249,11 @@ function readProfiles() {
         values.otherKm = Math.round(oldOtherKm / occupancy * 100) / 100;
       }
       if (version < 7 && values.conscientiousBeef === true) values.beefType = "ukDairy";
+      if (version < 8) Object.assign(values, dietShares(
+        Number.isFinite(values.meatServings) ? values.meatServings : 4,
+        Number.isFinite(values.dairyServings) ? values.dairyServings : 12,
+        Number.isFinite(values.calories) ? values.calories : 2000,
+      ));
       return {
         id: item.id, name: item.name.slice(0, 50),
         values: Object.fromEntries(modelFields.map(field => [
@@ -350,7 +355,7 @@ function buildField(field, quick = false) {
     });
     input.addEventListener("input", () => {
       if (Number.isFinite(input.valueAsNumber)) {
-        profile[field.key] = coerce(field, input.valueAsNumber);
+        profile[field.key] = Math.min(Number(input.max), coerce(field, input.valueAsNumber));
         render(input);
       }
     });
@@ -368,6 +373,11 @@ function buildField(field, quick = false) {
   contribution.hidden = true;
   heading.append(contribution);
   group.append(heading, adjustments);
+  if (["meatCalories", "dairyCalories"].includes(field.key)) {
+    const amount = create("p", "help");
+    amount.id = field.key + "-amount";
+    group.append(amount);
+  }
   if (field.help) {
     const help = create("p", "help", field.help);
     help.id = field.key + "-help";
@@ -397,12 +407,6 @@ function buildEditor() {
     summary.setAttribute("aria-label", "More " + section.title.toLowerCase() + " settings");
     const body = create("div", "editor-body");
     if (section.note) body.append(create("p", "help section-note", section.note));
-    if (section.category === 0) {
-      const warning = create("p", "help section-note", "These portions exceed your daily calories. The estimate scales them down to fit.");
-      warning.id = "diet-estimate";
-      warning.setAttribute("aria-live", "polite");
-      body.append(warning);
-    }
     if (section.category === 3) {
       const estimate = create("p", "help section-note");
       estimate.id = "heat-estimate";
@@ -424,6 +428,15 @@ function buildEditor() {
 
 function updateEditor(emissions, editing) {
   for (const [key, { field, group, buttons, input, slider, contribution }] of controls) {
+    if (key === "meatCalories" || key === "dairyCalories") {
+      const other = key === "meatCalories" ? "dairyCalories" : "meatCalories";
+      input.max = 100 - profile[other];
+      slider.max = input.max;
+      const dailyCalories = profile.calories * profile[key] / 100;
+      byId(key + "-amount").textContent = key === "meatCalories" ?
+        Math.round(dailyCalories / 300 * 150) + " g ~ " + number.format(dailyCalories / 300) + " portions/day" :
+        "~ " + number.format(dailyCalories / 120) + " portions/day";
+    }
     const selected = buttons.findLast(({ value }) =>
       typeof value === "object" ?
         Object.entries(value).every(([key, item]) => profile[key] === item) :
@@ -450,12 +463,11 @@ function updateEditor(emissions, editing) {
       contribution.textContent = emissionsText(sum(impact.map(part => emissions[part])));
     }
     group.disabled =
-      (key === "beef" && profile.meatServings === 0) ||
-      (key === "beefType" && (profile.meatServings === 0 || profile.beef === 0)) ||
+      (key === "beef" && profile.meatCalories === 0) ||
+      (key === "beefType" && (profile.meatCalories === 0 || profile.beef === 0)) ||
       (["carDays", "commuteKm", "otherKm"].includes(key) && profile.car === "none") ||
       (key === "indoor" && profile.heat === "none");
   }
-  byId("diet-estimate").hidden = dietEnergy(profile).portionScale === 1;
   const estimate = byId("heat-estimate");
   estimate.hidden = profile.heat === "none";
   if (!estimate.hidden) {

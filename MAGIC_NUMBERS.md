@@ -4,9 +4,7 @@ The calculator estimates annual tonnes of CO₂ equivalent (t CO₂e) per person
 
 ## Food
 
-Enter approximate total intake, including food eaten away from home. The model takes meat, dairy and egg calories out of the daily total and estimates the remainder as plant-based food and drink. Changing the diet preset keeps total calories and beef share fixed. If the entered portions would exceed the calorie total, the model scales the two portion counts down by the same proportion for the calculation and shows a note under More.
-
-Personal portion inputs use whole portions per week; both sliders reach 28 portions, with meat values up to 35 and dairy values up to 80 available by typing. Saved fractional personal portions are rounded when loaded. The comparison profiles can use fractional portions to represent averages across people.
+Enter approximate total intake, including food eaten away from home, and the percentages of calories from meat and fish and from dairy and eggs. The remainder is estimated as plant-based food and drink. The two percentages cannot sum to more than 100%. Changing total calories scales all food groups proportionally; changing the diet preset keeps total calories and beef share fixed.
 
 | Food | Energy assumption | Emissions assumption |
 | --- | ---: | --- |
@@ -15,7 +13,7 @@ Personal portion inputs use whole portions per week; both sliders reach 28 porti
 | Dairy and eggs | 120 kcal per portion | 0.6 kg CO₂e/portion. A rounded blend of milk (200 mL), yogurt (125 g, using milk as a proxy), cheese (30 g) and eggs (two). |
 | Other food and drink | Remaining daily kcal | 2.47 kg CO₂e per 2,000 kcal, the median modelled footprint of vegan diets in the UK EPIC-Oxford cohort at equal energy intake. We use it as a proxy for the remaining calories in all diets. |
 
-The model assumes each 150 g meat or fish portion contains 300 kcal, regardless of whether it is beef or another meat or fish. Each dairy and egg portion is assumed to contain 120 kcal. These are rounded examples informed by UK food composition data; actual calories vary by food and preparation. Both amounts are subtracted from total calories before calculating the remaining plant-based food. Changing the beef share changes emissions but not the assumed meat calories. Multiply weekly portions by 365 ÷ 7, then by the portion emissions. Apply the beef percentage by weight within meat and fish. Multiply remaining daily calories by 365 × 2.47 ÷ 2,000. The vegan result uses the study's estimate directly; the other presets are illustrative mixes using this calculator's factors, not the study's observed diet groups. Equal calorie intakes can have very different footprints. [Scarborough et al. (2023), Table 3](https://doi.org/10.1038/s43016-023-00795-w) · [UK food composition data](https://www.gov.uk/government/publications/composition-of-foods-integrated-dataset-cofid) · [Poore & Nemecek (2018)](https://doi.org/10.1126/science.aaq0216) · [Food factors by kilogram](https://ourworldindata.org/grapher/ghg-per-kg-poore)
+The model assumes each 150 g meat or fish portion contains 300 kcal, regardless of whether it is beef or another meat or fish. Each dairy and egg portion is assumed to contain 120 kcal. These are rounded examples informed by UK food composition data; actual calories vary by food and preparation. To estimate daily meat weight, multiply total calories by the meat share, then divide by 300 and multiply by 150 g. The daily dairy portion estimate divides its calorie share by 120. Apply the beef percentage by weight within meat and fish, then multiply by 365 and the meat factors. Multiply daily dairy portions by 365 and 0.6 kg CO₂e. Multiply remaining daily calories by 365 × 2.47 ÷ 2,000. Changing the beef share changes emissions but not the assumed meat calories. The vegan result uses the study's estimate directly; the other presets are illustrative mixes using this calculator's factors, not the study's observed diet groups. Equal calorie intakes can have very different footprints. [Scarborough et al. (2023), Table 3](https://doi.org/10.1038/s43016-023-00795-w) · [UK food composition data](https://www.gov.uk/government/publications/composition-of-foods-integrated-dataset-cofid) · [Poore & Nemecek (2018)](https://doi.org/10.1126/science.aaq0216) · [Food factors by kilogram](https://ourworldindata.org/grapher/ghg-per-kg-poore)
 
 ### Meat source values and calculator factors
 
@@ -42,13 +40,13 @@ The 50:50 mixes are assumptions, not measured production or consumption shares. 
 
 Other figures discussed for context: a Canadian assessment estimated 32.8 kg CO₂e/kg consumed boneless beef from specialised herds. A World Bank chart reports global dairy beef at 35.3; the global dataset linked above reports 33.3, which is used consistently for the blend here. These are not interchangeable farm-specific measurements. [Canadian study](https://doi.org/10.1139/CJAS-2023-0077) · [World Bank chart](https://documents1.worldbank.org/curated/en/099032425143541830/pdf/P180735-9d577df3-a7cb-4c45-a53c-4ce33dcfd0e1.pdf)
 
-| Preset | Meat and fish portions/week | Dairy and egg portions/week | Estimate at 2,000 kcal/day and 20% beef, t CO₂e/yr |
+| Preset | Meat and fish calories | Dairy and egg calories | Estimate at 2,000 kcal/day and 20% beef, t CO₂e/yr |
 | --- | ---: | ---: | ---: |
-| Vegan | 0 | 0 | 0.90 |
-| Veggie | 0 | 12 | 1.18 |
-| Low meat | 2 | 7 | 1.28 |
-| Med meat | 4 | 12 | 1.61 |
-| High meat | 8 | 20 | 2.23 |
+| Vegan | 0% | 0% | 0.90 |
+| Veggie | 0% | 10.3% | 1.18 |
+| Low meat | 4.3% | 6% | 1.28 |
+| Med meat | 8.6% | 10.3% | 1.62 |
+| High meat | 17.1% | 17.1% | 2.23 |
 
 ## Travel
 
@@ -230,4 +228,4 @@ The migration from mile-based profiles converts driving distances using 1.609344
 
 The migration to weekly transit minutes preserves prior annual bus and rail distance over 48 weeks. Car commuting uses 48 weeks for all profiles. Fixed devices and telecom replace older personal entries. The previous AI rate presets remain selectable. Older custom rates outside those choices use the defaults. Saved token volumes are retained.
 
-Profiles saved before the calorie controls use 2,000 kcal/day until edited. Older meat and dairy/egg weights convert at 150 g per portion to retain the approximate amounts. The old weight for other food is replaced by the calorie remainder. Other car distance is divided by the old occupancy to keep the personal share, and all commutes now assume a solo driver.
+Profiles saved before the calorie controls use 2,000 kcal/day until edited. Older meat and dairy/egg weights convert at 150 g per portion to retain the approximate amounts. Saved weekly portions are converted to calorie shares using their saved calorie total, rounded to 0.1 percentage points; if their calories exceeded the total, both are scaled down proportionally. The old weight for other food is replaced by the calorie remainder. Other car distance is divided by the old occupancy to keep the personal share, and all commutes now assume a solo driver.

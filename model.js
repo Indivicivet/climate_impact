@@ -43,12 +43,23 @@ const devicesAndTelecomKg = 50 / 2 + 180 / 5 + 12 * 25 * 0.1;
 const beefFactors = { ukDairy: 26, ukMixed: 37, worldMixed: 66 };
 const otherMeatFactor = 11;
 
+function dietShares(meatServings, dairyServings, calories) {
+  const meatCalories = meatServings * 300;
+  const dairyCalories = dairyServings * 120;
+  const totalCalories = Math.max(calories * 7, meatCalories + dairyCalories);
+  const meatShare = Math.round(1000 * meatCalories / totalCalories) / 10;
+  return {
+    meatCalories: meatShare,
+    dairyCalories: Math.min(100 - meatShare, Math.round(1000 * dairyCalories / totalCalories) / 10),
+  };
+}
+
 const dietPresets = [
-  { meatServings: 0, dairyServings: 0 },
-  { meatServings: 0, dairyServings: 12 },
-  { meatServings: 2, dairyServings: 7 },
-  { meatServings: 4, dairyServings: 12 },
-  { meatServings: 8, dairyServings: 20 },
+  dietShares(0, 0, 2000),
+  dietShares(0, 12, 2000),
+  dietShares(2, 7, 2000),
+  dietShares(4, 12, 2000),
+  dietShares(8, 20, 2000),
 ];
 
 const travelPresets = [
@@ -93,13 +104,13 @@ const initial = {
 // Illustrative activity mixes. Fractional journeys represent a per-person annual average.
 const benchmarks = [
   { id: "uk", name: "United Kingdom", button: "🇬🇧 UK", activities: {
-    meatServings: 7, beef: 18, dairyServings: 16.7, shortTrips: 1, longTrips: 0.25, hotelNights: 6,
+    ...dietShares(7, 16.7, 2000), beef: 18, shortTrips: 1, longTrips: 0.25, hotelNights: 6,
     carDays: 0, otherKm: 5800, busMinutes: 40, trainMinutes: 22.5,
     homeType: "semi", people: 2.4, weeklyMTokens: 0.02,
   } },
   { id: "us", name: "United States", button: "🇺🇸 US", activities: {
     beefType: "worldMixed",
-    meatServings: 10.3, beef: 27, dairyServings: 19.3, shortTrips: 1.6, longTrips: 0.35, shortKm: 1600,
+    ...dietShares(10.3, 19.3, 2000), beef: 27, shortTrips: 1.6, longTrips: 0.35, shortKm: 1600,
     carDays: 0, otherKm: 12770, busMinutes: 16, trainMinutes: 9,
     homeType: "detached", electricity: 9500, grid: grids.us, winter: 0, summer: 25,
     indoor: 20, people: 2.5, shopping: 125, hotelNights: 9, hotelRegion: "us",
@@ -107,7 +118,7 @@ const benchmarks = [
   } },
   { id: "china", name: "China", button: "🇨🇳 China", activities: {
     beefType: "worldMixed",
-    meatServings: 6.2, beef: 10, dairyServings: 4.3, shortTrips: 0.45, longTrips: 0.08, shortKm: 1300,
+    ...dietShares(6.2, 4.3, 2000), beef: 10, shortTrips: 0.45, longTrips: 0.08, shortKm: 1300,
     carDays: 0, otherKm: 2470, busMinutes: 100, trainMinutes: 51.75,
     homeType: "flat", electricity: 3200, grid: grids.china, winter: 1, summer: 26,
     people: 2.6, shopping: 60, hotelNights: 4, hotelRegion: "china",
@@ -115,7 +126,7 @@ const benchmarks = [
   } },
   { id: "high-income", name: "High-income countries", button: "Developed world", activities: {
     beefType: "worldMixed",
-    meatServings: 8, beef: 21, dairyServings: 16, shortTrips: 1.1, longTrips: 0.28,
+    ...dietShares(8, 16, 2000), beef: 21, shortTrips: 1.1, longTrips: 0.28,
     carDays: 0, otherKm: 7400, busMinutes: 40, trainMinutes: 25.2,
     homeType: "semi", electricity: 5100, grid: 0.35, winter: 3, summer: 22, people: 2.5,
     shopping: 100, hotelNights: 7, leisure: 45,
@@ -123,7 +134,7 @@ const benchmarks = [
   } },
   { id: "world", name: "World average", button: "🌐 World", activities: {
     beefType: "worldMixed",
-    meatServings: 3.8, beef: 17, dairyServings: 8, shortTrips: 0.27, longTrips: 0.08,
+    ...dietShares(3.8, 8, 2000), beef: 17, shortTrips: 0.27, longTrips: 0.08,
     carDays: 0, otherKm: 2180, busMinutes: 80, trainMinutes: 18.75,
     homeType: "terrace", electricity: 2800, grid: grids.world, winter: 10, summer: 26,
     indoor: 19, people: 3.5, shopping: 41, hotelNights: 2, leisure: 12, weeklyMTokens: 0.01,
@@ -150,18 +161,8 @@ function spaceEnergy(profile) {
   };
 }
 
-function dietEnergy(profile) {
-  const weeklyAnimalCalories = profile.meatServings * 300 + profile.dairyServings * 120;
-  const weeklyCalories = profile.calories * 7;
-  return {
-    portionScale: weeklyAnimalCalories > weeklyCalories ? weeklyCalories / weeklyAnimalCalories : 1,
-    otherCalories: Math.max(0, weeklyCalories - weeklyAnimalCalories) / 7,
-  };
-}
-
 function calculate(profile) {
-  const { portionScale, otherCalories } = dietEnergy(profile);
-  const annualMeatKg = profile.meatServings * 0.15 * 365 / 7 * portionScale;
+  const annualMeatKg = profile.calories * profile.meatCalories / 100 / 300 * 0.15 * 365;
   const beefShare = profile.beef / 100;
   const carKm = profile.car === "none" ? 0 :
     profile.carDays * profile.commuteKm * travelWeeks + profile.otherKm;
@@ -179,8 +180,8 @@ function calculate(profile) {
   const kg = {
     beef: annualMeatKg * beefShare * beefFactors[profile.beefType],
     otherMeat: annualMeatKg * (1 - beefShare) * otherMeatFactor,
-    dairy: profile.dairyServings * 0.6 * 365 / 7 * portionScale,
-    otherFood: otherCalories * 2.47 / 2000 * 365,
+    dairy: profile.calories * profile.dairyCalories / 100 / 120 * 0.6 * 365,
+    otherFood: profile.calories * (100 - profile.meatCalories - profile.dairyCalories) / 100 * 2.47 / 2000 * 365,
     shortTrips: 2 * profile.shortTrips * profile.shortKm * (0.12576 + 0.02249),
     longTrips: 2 * profile.longTrips * profile.longKm * (0.11704 + 0.02461),
     hotelNights: profile.hotelNights * hotelFactors[profile.hotelRegion][profile.hotelType],
