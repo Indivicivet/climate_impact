@@ -722,10 +722,6 @@ function render(editing) {
   updateEditor(emissions, editing);
 }
 
-byId("reset").addEventListener("click", () => {
-  profile = { ...initial };
-  render();
-});
 byId("save-profile").addEventListener("submit", event => {
   event.preventDefault();
   const input = byId("profile-name");
