@@ -14,21 +14,19 @@
     <noscript><p>Enable JavaScript to use the calculator.</p></noscript>
     <div class="workspace">
       <section class="analysis panel" aria-label="Carbon footprint comparison">
-        <div class="metrics" aria-label="Your annual estimate">
-          <span id="gross" aria-label="Your footprint"></span>
-          <span id="reduction"></span>
-          <span id="cost"></span>
-        </div>
-
         <div class="pies">
           <section class="pie-person" aria-label="Your estimate">
             <div class="pie-caption">You</div>
             <div id="your-pie"></div>
+            <div class="pie-info">
+              <span id="cost"></span>
+              <span id="reduction" hidden></span>
+            </div>
           </section>
           <section class="pie-person" aria-label="Comparison">
             <div id="comparison" class="comparison-picker" role="group" aria-label="Compare with"></div>
             <div id="reference-pie"></div>
-            <div class="reference-info">
+            <div class="pie-info">
               <span id="offset-comparison"></span>
               <span id="comparison-note"></span>
             </div>

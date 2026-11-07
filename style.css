@@ -39,18 +39,7 @@ p { margin: 0; color: var(--muted); }
 .panel { background: #fff; border: 1px solid var(--border); border-radius: 10px; min-width: 0; }
 .analysis { padding: 12px 16px; }
 
-.metrics {
-  display: flex;
-  flex-wrap: wrap;
-  justify-content: space-between;
-  gap: 5px 14px;
-  padding: 9px 11px;
-  background: #eaf2e9;
-  border-radius: 6px;
-  color: var(--muted);
-  font-size: 0.84rem;
-}
-.metrics strong, .reference-info strong { color: var(--ink); font-variant-numeric: tabular-nums; }
+.pie-info strong { color: var(--ink); font-variant-numeric: tabular-nums; }
 
 .pies {
   display: grid;
@@ -121,7 +110,7 @@ p { margin: 0; color: var(--muted); }
   font-variant-numeric: tabular-nums;
   pointer-events: none;
 }
-.reference-info { display: flex; flex-wrap: wrap; justify-content: center; gap: 2px 8px; font-size: 0.82rem; color: var(--muted); }
+.pie-info { display: flex; flex-wrap: wrap; justify-content: center; gap: 2px 8px; font-size: 0.82rem; color: var(--muted); }
 .profile-actions { display: flex; gap: 5px; justify-content: center; }
 
 .bar-section { border-top: 1px solid var(--border); padding-top: 6px; }
@@ -282,9 +271,8 @@ p { margin: 0; color: var(--muted); }
   .wrap { width: calc(100% - 14px); margin-block: 7px; }
   .analysis { padding: 7px; }
   .pies { column-gap: 6px; }
-  .metrics { gap: 3px 9px; padding: 6px 8px; font-size: 0.78rem; }
   .comparison-options button, .profile-actions button { font-size: 0.78rem; padding-inline: 5px; }
-  .reference-info { font-size: 0.75rem; }
+  .pie-info { font-size: 0.75rem; }
   .bar-chart { --axis: 28px; }
   .bar-plot { height: 170px; }
   .bar-totals { display: grid; gap: 1px; }

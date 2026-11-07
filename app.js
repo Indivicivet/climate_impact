@@ -698,7 +698,7 @@ function render(editing) {
   const referenceReduction = savedProfile ? savedProfile.values.donation / savedProfile.values.price : 0;
   const referenceName = savedProfile ? savedProfile.name : benchmark.name;
 
-  setMetric("gross", tonnes(yourTotal) + " t CO₂e/yr", "per person");
+  byId("reduction").hidden = reduction <= 0;
   setMetric("reduction", tonnes(reduction) + " t CO₂e/yr", "funded");
   setMetric("cost", currency.format(yourTotal * profile.price) + "/yr", "to offset");
   byId("cost").title = reduction ?
