@@ -8,7 +8,7 @@ Enter approximate total intake, including food eaten away from home. The model t
 
 | Food | Energy assumption | Emissions assumption |
 | --- | ---: | --- |
-| Beef | 300 kcal per 150 g portion | 60 kg CO₂e/kg. An illustrative blend of beef-herd and dairy-herd beef, whose global means are about 99 and 33. |
+| Beef | 300 kcal per 150 g portion | 60 kg CO₂e/kg by default: an illustrative blend of beef-herd and dairy-herd beef, whose global means are about 99 and 33. The conscientious beef option uses an illustrative 35 kg CO₂e/kg for lower-impact beef; actual impacts vary by farm and supply chain. |
 | Other meat and fish | 300 kcal per 150 g portion | 10 kg CO₂e/kg, near poultry at 9.9. Pork is about 12.3; lamb and seafood vary widely. |
 | Dairy and eggs | 120 kcal per portion | 0.6 kg CO₂e/portion. A rounded blend of milk (200 mL), yogurt (125 g, using milk as a proxy), cheese (30 g) and eggs (two). |
 | Other food and drink | Remaining daily kcal | 2.47 kg CO₂e per 2,000 kcal, the median modelled footprint of vegan diets in the UK EPIC-Oxford cohort at equal energy intake. We use it as a proxy for the remaining calories in all diets. |

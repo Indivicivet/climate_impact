@@ -78,7 +78,7 @@ const sharedFootprints = {
 };
 
 const initial = {
-  ...dietPresets[3], calories: 2000, beef: 20,
+  ...dietPresets[3], calories: 2000, beef: 20, conscientiousBeef: false,
   ...travelPresets[0], shortKm: 1500, longKm: 6500, hotelRegion: "uk", hotelType: "typical",
   car: "petrol", carDays: 3, commuteKm: 32, otherKm: 2900,
   busMinutes: 0, trainMinutes: 0,
@@ -170,7 +170,7 @@ function calculate(profile) {
 
   const [publicServices, capital] = sharedFootprints[profile.sharedRegion];
   const kg = {
-    beef: annualMeatKg * beefShare * 60,
+    beef: annualMeatKg * beefShare * (profile.conscientiousBeef ? 35 : 60),
     otherMeat: annualMeatKg * (1 - beefShare) * 10,
     dairy: profile.dairyServings * 0.6 * 365 / 7 * portionScale,
     otherFood: otherCalories * 2.47 / 2000 * 365,

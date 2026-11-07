@@ -14,6 +14,8 @@ const sections = [
         impact: ["beef", "otherMeat"], help: "One portion is about a palm-sized serving (150 g)." },
       { key: "beef", label: "Beef as a share of meat", unit: "%", max: 100, integer: true,
         choices: [["0%", 0], ["10%", 10], ["20%", 20], ["50%", 50]] },
+      { key: "conscientiousBeef", label: "Conscientious beef only", checkbox: true,
+        help: "Uses an illustrative 35 kg CO₂e/kg for lower-impact beef." },
       { key: "dairyServings", label: "Dairy and eggs", unit: "portions/wk", max: 80, sliderMax: 28, step: 0.5,
         impact: ["dairy"], help: "One portion: a glass of milk, a pot of yogurt, a piece of cheese or two eggs." },
     ],
@@ -190,6 +192,7 @@ function tonnes(value) {
 }
 
 function coerce(field, value) {
+  if (field.checkbox) return typeof value === "boolean" ? value : initial[field.key];
   if (!field.unit) {
     return field.choices.some(([, choice]) => value === choice) ? value : initial[field.key];
   }
@@ -288,6 +291,19 @@ function buildComparisonOptions() {
 
 function buildField(field, quick = false) {
   const group = create("fieldset", quick ? "field quick-field" : "field");
+  if (field.checkbox) {
+    const label = create("label", "checkbox-label");
+    const input = create("input");
+    input.type = "checkbox";
+    input.addEventListener("change", () => {
+      profile[field.key] = input.checked;
+      render();
+    });
+    label.append(input, document.createTextNode(field.label));
+    group.append(label, create("p", "help", field.help));
+    controls.set(field.key, { field, group, buttons: [], input, contribution: create("span") });
+    return group;
+  }
   if (quick && field.quickSlider) group.classList.add("quick-slider");
   group.append(create("legend", "sr-only", field.label));
   const heading = create("div", "field-heading");
@@ -426,7 +442,8 @@ function updateEditor(emissions, editing) {
     for (const choice of buttons) {
       choice.button.setAttribute("aria-pressed", choice === selected);
     }
-    if (input && input !== editing) input.value = profile[key];
+    if (field.checkbox) input.checked = profile[key];
+    else if (input && input !== editing) input.value = profile[key];
     if (slider) {
       const value = profile[key];
       if (field.slider === "log") {
@@ -445,6 +462,7 @@ function updateEditor(emissions, editing) {
     }
     group.disabled =
       (key === "beef" && profile.meatServings === 0) ||
+      (key === "conscientiousBeef" && (profile.meatServings === 0 || profile.beef === 0)) ||
       (["carDays", "commuteKm", "otherKm"].includes(key) && profile.car === "none") ||
       (key === "indoor" && profile.heat === "none");
   }
