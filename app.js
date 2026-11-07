@@ -556,43 +556,27 @@ function drawPie(container, name, groups, total, reduction = 0) {
     addRing(groups.flatMap(group => group.parts.map(part => ({ ...part, parent: group }))), 111, 148);
 
     let start = 0;
-    const labels = [[], []];
     for (const group of groups) {
       if (group.amount <= 0) continue;
       const angle = start + Math.PI * group.amount / total;
       const x = 150 + 94 * Math.sin(angle);
       const y = 150 - 94 * Math.cos(angle);
-      labels[x < 150 ? 0 : 1].push({ group, x, y });
-      start += turn * group.amount / total;
-    }
-    for (const [side, items] of labels.entries()) {
-      items.sort((a, b) => a.y - b.y);
-      const positions = items.map((item, i) => Math.max(item.y, 20 + i * 25));
-      for (let i = positions.length - 1; i >= 0; i--) {
-        positions[i] = Math.min(positions[i], 280 - (positions.length - 1 - i) * 25);
+      const lines = group.label.split(" ");
+      lines.push(chartTotal(group.amount));
+      const label = document.createElementNS(svgNamespace, "text");
+      label.setAttribute("x", x);
+      label.setAttribute("y", y - (lines.length - 1) * 4 + 3);
+      label.setAttribute("class", "pie-label");
+      label.setAttribute("aria-hidden", "true");
+      for (const [index, text] of lines.entries()) {
+        const line = document.createElementNS(svgNamespace, "tspan");
+        line.setAttribute("x", x);
+        if (index) line.setAttribute("dy", "8");
+        line.textContent = text;
+        label.append(line);
       }
-      items.forEach((item, i) => {
-        const x = side ? 252 : 48;
-        const line = document.createElementNS(svgNamespace, "line");
-        line.setAttribute("x1", item.x);
-        line.setAttribute("y1", item.y);
-        line.setAttribute("x2", side ? x - 22 : x + 22);
-        line.setAttribute("y2", positions[i]);
-        line.setAttribute("class", "pie-label-line");
-        const label = document.createElementNS(svgNamespace, "text");
-        label.setAttribute("x", x);
-        label.setAttribute("y", positions[i] - 2);
-        label.setAttribute("class", "pie-label");
-        const name = document.createElementNS(svgNamespace, "tspan");
-        name.setAttribute("x", x);
-        name.textContent = item.group.short ?? item.group.label;
-        const value = document.createElementNS(svgNamespace, "tspan");
-        value.setAttribute("x", x);
-        value.setAttribute("dy", "10");
-        value.textContent = chartTotal(item.group.amount);
-        label.append(name, value);
-        graphic.append(line, label);
-      });
+      graphic.append(label);
+      start += turn * group.amount / total;
     }
   }
 

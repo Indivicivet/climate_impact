@@ -109,7 +109,6 @@ p { margin: 0; color: var(--muted); }
 }
 .pie-centre > span { line-height: 1.15; }
 .pie-gross { margin-top: 3px; font-size: 0.76em; }
-.pie-label-line { stroke: #17241d; stroke-width: 0.8; pointer-events: none; }
 .pie-label {
   fill: #17241d;
   stroke: #fff;
@@ -117,7 +116,7 @@ p { margin: 0; color: var(--muted); }
   paint-order: stroke;
   stroke-linejoin: round;
   text-anchor: middle;
-  font-size: 9px;
+  font-size: 8px;
   font-weight: 700;
   font-variant-numeric: tabular-nums;
   pointer-events: none;
