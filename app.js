@@ -254,12 +254,11 @@ function readProfiles() {
         Number.isFinite(values.dairyServings) ? values.dairyServings : 12,
         Number.isFinite(values.calories) ? values.calories : 2000,
       ));
-      return {
-        id: item.id, name: item.name.slice(0, 50),
-        values: Object.fromEntries(modelFields.map(field => [
-          field.key, coerce(field, values[field.key]),
-        ])),
-      };
+      const coerced = Object.fromEntries(modelFields.map(field => [
+        field.key, coerce(field, values[field.key]),
+      ]));
+      coerced.dairyCalories = Math.min(100 - coerced.meatCalories, coerced.dairyCalories);
+      return { id: item.id, name: item.name.slice(0, 50), values: coerced };
     });
   } catch {
     return [];

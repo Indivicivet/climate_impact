@@ -13,7 +13,7 @@ Enter approximate total intake, including food eaten away from home, and the per
 | Dairy and eggs | 120 kcal per portion | 0.6 kg CO₂e/portion. A rounded blend of milk (200 mL), yogurt (125 g, using milk as a proxy), cheese (30 g) and eggs (two). |
 | Other food and drink | Remaining daily kcal | 2.47 kg CO₂e per 2,000 kcal, the median modelled footprint of vegan diets in the UK EPIC-Oxford cohort at equal energy intake. We use it as a proxy for the remaining calories in all diets. |
 
-The model assumes each 150 g meat or fish portion contains 300 kcal, regardless of whether it is beef or another meat or fish. Each dairy and egg portion is assumed to contain 120 kcal. These are rounded examples informed by UK food composition data; actual calories vary by food and preparation. To estimate daily meat weight, multiply total calories by the meat share, then divide by 300 and multiply by 150 g. The daily dairy portion estimate divides its calorie share by 120. Apply the beef percentage by weight within meat and fish, then multiply by 365 and the meat factors. Multiply daily dairy portions by 365 and 0.6 kg CO₂e. Multiply remaining daily calories by 365 × 2.47 ÷ 2,000. Changing the beef share changes emissions but not the assumed meat calories. The vegan result uses the study's estimate directly; the other presets are illustrative mixes using this calculator's factors, not the study's observed diet groups. Equal calorie intakes can have very different footprints. [Scarborough et al. (2023), Table 3](https://doi.org/10.1038/s43016-023-00795-w) · [UK food composition data](https://www.gov.uk/government/publications/composition-of-foods-integrated-dataset-cofid) · [Poore & Nemecek (2018)](https://doi.org/10.1126/science.aaq0216) · [Food factors by kilogram](https://ourworldindata.org/grapher/ghg-per-kg-poore)
+The model assumes each 150 g meat or fish portion contains 300 kcal, regardless of whether it is beef or another meat or fish. Each dairy and egg portion is assumed to contain 120 kcal. These are rounded examples informed by UK food composition data; actual calories vary by food and preparation. To estimate daily meat weight, multiply total calories by the meat share, then divide by 300 and multiply by 150 g. To estimate daily dairy portions, multiply total calories by the dairy share and divide by 120. Apply the beef percentage by weight within meat and fish, then multiply by 365 and the meat factors. Multiply daily dairy portions by 365 and 0.6 kg CO₂e. Multiply remaining daily calories by 365 × 2.47 ÷ 2,000. Changing the beef share changes emissions but not the assumed meat calories. The vegan result uses the study's estimate directly; the other presets are illustrative mixes using this calculator's factors, not the study's observed diet groups. Equal calorie intakes can have very different footprints. [Scarborough et al. (2023), Table 3](https://doi.org/10.1038/s43016-023-00795-w) · [UK food composition data](https://www.gov.uk/government/publications/composition-of-foods-integrated-dataset-cofid) · [Poore & Nemecek (2018)](https://doi.org/10.1126/science.aaq0216) · [Food factors by kilogram](https://ourworldindata.org/grapher/ghg-per-kg-poore)
 
 ### Meat source values and calculator factors
 
@@ -40,13 +40,15 @@ The 50:50 mixes are assumptions, not measured production or consumption shares. 
 
 Other figures discussed for context: a Canadian assessment estimated 32.8 kg CO₂e/kg consumed boneless beef from specialised herds. A World Bank chart reports global dairy beef at 35.3; the global dataset linked above reports 33.3, which is used consistently for the blend here. These are not interchangeable farm-specific measurements. [Canadian study](https://doi.org/10.1139/CJAS-2023-0077) · [World Bank chart](https://documents1.worldbank.org/curated/en/099032425143541830/pdf/P180735-9d577df3-a7cb-4c45-a53c-4ce33dcfd0e1.pdf)
 
-| Preset | Meat and fish calories | Dairy and egg calories | Estimate at 2,000 kcal/day and 20% beef, t CO₂e/yr |
-| --- | ---: | ---: | ---: |
-| Vegan | 0% | 0% | 0.90 |
-| Veggie | 0% | 10.3% | 1.18 |
-| Low meat | 4.3% | 6% | 1.28 |
-| Med meat | 8.6% | 10.3% | 1.62 |
-| High meat | 17.1% | 17.1% | 2.23 |
+| Preset | Portions/week (meat / dairy) | Meat and fish calories | Dairy and egg calories | Estimate at 2,000 kcal/day and 20% beef, t CO₂e/yr |
+| --- | ---: | ---: | ---: | ---: |
+| Vegan | 0 / 0 | 0% | 0% | 0.90 |
+| Veggie | 0 / 12 | 0% | 10.3% | 1.18 |
+| Low meat | 2 / 7 | 4.3% | 6% | 1.28 |
+| Med meat | 4 / 12 | 8.6% | 10.3% | 1.62 |
+| High meat | 8 / 20 | 17.1% | 17.1% | 2.23 |
+
+The preset percentages are the weekly portion energies divided by 14,000 kcal/week, rounded to 0.1 percentage points.
 
 ## Travel
 
@@ -79,7 +81,7 @@ Car distance is round-trip commute kilometres × days per week × 48, plus your 
 | --- | ---: | --- |
 | Petrol or diesel car | 0.21081 kg/vehicle-km | Mean of DESNZ average petrol (0.16152 + 0.04599 upstream) and diesel (0.17265 + 0.04146). |
 | Hybrid | 0.16276 kg/vehicle-km | DESNZ average hybrid (0.12961 + 0.03315 upstream). |
-| Electric car | 0.205 kWh/vehicle-km × selected grid factor | DESNZ average battery EV electricity emissions, 0.02686 kg/km ÷ 0.13096 kg/kWh. |
+| Electric car | 0.205 kWh/vehicle-km × home grid factor | DESNZ average battery EV electricity emissions, 0.02686 kg/km ÷ 0.13096 kg/kWh. |
 | Car manufacture | 0.040 kg/vehicle-km | Illustrative 8 t spread over 200,000 km. The same allowance covers all car types here. |
 | Bus | 0.128 kg/passenger-km | DESNZ average local bus, 0.10151 + 0.02649 upstream. |
 | Train | 0.03989 kg/passenger-km | DESNZ national rail, 0.03092 + 0.00897 upstream. |
@@ -120,7 +122,7 @@ The 4 °C adjustment is a simplifying estimate for internal and solar gains and 
 
 The boiler efficiencies are model assumptions. The heat pump uses the median SPFH4 from the UK Electrification of Heat demonstration, which includes hot water. The grid preset factors in kg CO₂e/kWh are UK 0.131 (DESNZ 2026 publication, rounded from 0.13096), US 0.384, China 0.525, EU 0.210 and world 0.458 (Ember 2025 generation, reported in 2026). Local generation mixes and accounting boundaries vary. [DESNZ 2026 flat file](https://assets.publishing.service.gov.uk/media/6a6c9748862aaf18d9c62ac9/ghg-conversion-factors-2026-flat-format-revised.xlsx) · [UK heat pump evidence, technical annex](https://assets.publishing.service.gov.uk/media/65af94848bbe95000e5eb27a/shdfd-whr-outcome-and-economic-evaluation-technical-annex.pdf) · [Ember Global Electricity Review 2026](https://ember-energy.org/latest-insights/global-electricity-review-2026/major-countries-and-regions/)
 
-The flat preset uses one occupant. The other presets use two. All use UK grid electricity and cold/warm monthly means of 4 °C and 15.3 °C. The outdoor means approximate the midpoints of the Met Office's UK January and July normal high and low temperatures for 1991–2020. The low/medium/high appliance values use representative Ofgem Profile Class 1 values. The 9,500 kWh heavy-use option is a scenario below the EIA's 2022 US household electricity purchases of 10,791 kWh, since heating is modelled separately. Appliance electricity includes lights. Exclude car charging and any heating or cooling entered separately.
+Selecting a flat (or the low preset) sets one occupant; selecting a house type (or the other presets) sets two. All presets use UK grid electricity and cold/warm monthly means of 4 °C and 15.3 °C. The outdoor means approximate the midpoints of the Met Office's UK January and July normal high and low temperatures for 1991–2020. The low/medium/high appliance values use representative Ofgem Profile Class 1 values. The 9,500 kWh heavy-use option is a scenario below the EIA's 2022 US household electricity purchases of 10,791 kWh, since heating is modelled separately. Appliance electricity includes lights. Exclude car charging and any heating or cooling entered separately.
 
 | Preset | Home | Thermostat | Heater | Appliance kWh/yr | Estimated space heat, kWh/yr |
 | --- | --- | ---: | --- | ---: | ---: |
@@ -166,7 +168,7 @@ The UK factors divide Defra's 2023 central and local government consumption foot
 | High income | 64,881 | 17.30% | 22.54% | 1,039 + 1,570 |
 | World | 23,382 | 16.64% | 25.98% | 360 + 652 |
 
-The model splits government consumption into central and local using the UK ratio for every region; the regional splits are therefore proxies, not observed local shares. The UK totals correspond to approximately 776 kg central and 384 kg local per person per year (rounding the combined total produces 1,161 kg).
+The model splits government consumption into central and local using the UK ratio for every region; the regional splits are therefore proxies, not observed local shares. The UK totals correspond to 776.4 kg central and 384.1 kg local per person per year (rounded to 1,161 kg combined, which the model splits into 777 kg and 384 kg).
 
 Individual choices can affect activities within these broad accounts, but the published totals do not identify an individual waste contribution. England generated 376 kg of household waste per person in 2024; a study estimated 17 kg CO₂e per 100 kg of food waste for one kerbside pathway. This is not a typical individual saving, and landfill or other treatment can differ. Water supply and wastewater treatment at an illustrative combined 0.36 kg CO₂e/m³ imply about 13 kg CO₂e/year for 100 litres/day, excluding water heating; their allocation to government consumption is not established. [Defra household waste](https://www.gov.uk/government/statistics/local-authority-collected-waste-management-annual-results/local-authority-collected-waste-management-annual-results-202425) · [Food waste study](https://link.springer.com/article/10.1007/s11367-026-02666-5) · [Water factors](https://cultureforclimate.scot/services/environmental-reporting/guidance-for-reporting-organisations/emission-factors/)
 
@@ -208,15 +210,15 @@ At 3 million tokens/week, the typical electricity rate, baseline hardware rate a
 
 Each reference runs the same activity model with the explicit inputs in [model.js](model.js). Every category and subcategory is calculated from those inputs. These profiles are illustrations, with several inputs anchored to statistics and others chosen to show plausible activity differences. They are not observed national footprints or representative surveys. High-income countries are the proxy for developed economies. The UK reference uses the mixed UK beef factor; the other references use the mixed world factor.
 
-| Reference | Meat and fish portions/week | Vehicle km per person after sharing | Household appliance electricity kWh/yr | Model result, t CO₂e/person/yr |
+| Reference | Meat and fish portions/wk (calorie share) | Vehicle km per person after sharing | Household appliance electricity kWh/yr | Model result, t CO₂e/person/yr |
 | --- | ---: | ---: | ---: | ---: |
-| UK | 7 | 5,800 | 2,700 | 8.8 |
-| US | 10.3 | 12,770 | 9,500 | 14.8 |
-| China | 6.2 | 2,470 | 3,200 | 6.3 |
-| High income | 8 | 7,400 | 5,100 | 10.6 |
-| World | 3.8 | 2,180 | 2,800 | 4.7 |
+| UK | 7 (15%) | 5,800 | 2,700 | 8.8 |
+| US | 10.3 (22.1%) | 12,770 | 9,500 | 14.8 |
+| China | 6.2 (13.3%) | 2,470 | 3,200 | 6.3 |
+| High income | 8 (17.1%) | 7,400 | 5,100 | 10.6 |
+| World | 3.8 (8.1%) | 2,180 | 2,800 | 4.7 |
 
-For diet, the UK, China and world examples use about 65% of FAOSTAT meat supply by weight (84.44, 74.03 and 45.12 kg/person/year) as a rough portion-weight proxy. The 65% is an assumption to allow for non-edible material, preparation and waste, which vary by food and location. US and high-income amounts and beef shares are illustrative. GB's roughly 412 billion car-kilometres in 2024 and FHWA's US light-duty travel figures anchor the order of magnitude of the road scenarios. US electricity uses the EIA anchor described under Home. Remaining distances, travel mix, climate endpoints, household size, non-US/UK electricity, budgets and AI use are illustrative. For example, the China case uses a flat and a China grid, with more bus and rail travel and less driving than the US case. Model totals omit activity outside the inputs and can differ from official consumption or territorial inventories. [FAOSTAT food balances](https://www.fao.org/faostat/en/#data/FBS) · [FAOSTAT meat supply data view](https://ourworldindata.org/grapher/meat-supply-per-person?tab=table) · [GB road traffic](https://www.gov.uk/government/statistics/road-traffic-estimates-in-great-britain-2024) · [US FHWA travel](https://www.fhwa.dot.gov/policyinformation/statistics/2023/vm1.cfm) · [Defra UK consumption footprint](https://www.gov.uk/government/statistics/uks-carbon-footprint/carbon-footprint-for-the-uk-and-england-to-2023)
+For diet, the UK, China and world examples use about 65% of FAOSTAT meat supply by weight (84.44, 74.03 and 45.12 kg/person/year) as a rough portion-weight proxy, converted to calorie shares at 2,000 kcal/day in the same way as the presets. The 65% is an assumption to allow for non-edible material, preparation and waste, which vary by food and location. US and high-income amounts and beef shares are illustrative. GB's roughly 412 billion car-kilometres in 2024 and FHWA's US light-duty travel figures anchor the order of magnitude of the road scenarios. US electricity uses the EIA anchor described under Home. Remaining distances, travel mix, climate endpoints, household size, non-US/UK electricity (including a 0.35 kg/kWh grid factor for High income), budgets and AI use are illustrative. For example, the China case uses a flat and a China grid, with more bus and rail travel and less driving than the US case. Model totals omit activity outside the inputs and can differ from official consumption or territorial inventories. [FAOSTAT food balances](https://www.fao.org/faostat/en/#data/FBS) · [FAOSTAT meat supply data view](https://ourworldindata.org/grapher/meat-supply-per-person?tab=table) · [GB road traffic](https://www.gov.uk/government/statistics/road-traffic-estimates-in-great-britain-2024) · [US FHWA travel](https://www.fhwa.dot.gov/policyinformation/statistics/2023/vm1.cfm) · [Defra UK consumption footprint](https://www.gov.uk/government/statistics/uks-carbon-footprint/carbon-footprint-for-the-uk-and-england-to-2023)
 
 ## Donations and saved profiles
 
