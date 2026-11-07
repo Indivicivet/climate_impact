@@ -10,7 +10,7 @@ const sections = [
         min: 1000, max: 4000, step: 100, quickSlider: true },
     ],
     detail: [
-      { key: "meatServings", label: "Meat and fish", unit: "portions/wk", max: 35, sliderMax: 14, step: 0.5,
+      { key: "meatServings", label: "Meat and fish", unit: "portions/wk", max: 35, sliderMax: 28, integer: true,
         impact: ["beef", "otherMeat"], help: "One portion is about a palm-sized serving (150 g)." },
       { key: "beef", label: "Beef as a share of meat", unit: "%", max: 100, integer: true,
         choices: [["0%", 0], ["10%", 10], ["20%", 20], ["50%", 50]] },
@@ -18,7 +18,7 @@ const sections = [
         ["Conscientious (UK Dairy)", "ukDairy"], ["Mixed (UK)", "ukMixed"],
         ["Mixed (World)", "worldMixed"],
       ], help: "Illustrative averages; actual impacts vary by farm and supply chain." },
-      { key: "dairyServings", label: "Dairy and eggs", unit: "portions/wk", max: 80, sliderMax: 28, step: 0.5,
+      { key: "dairyServings", label: "Dairy and eggs", unit: "portions/wk", max: 80, sliderMax: 28, integer: true,
         impact: ["dairy"], help: "One portion: a glass of milk, a pot of yogurt, a piece of cheese or two eggs." },
     ],
     note: "The remaining calories are estimated as plant-based food and drink.",
